@@ -5,16 +5,46 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+    /*
 
-public class OrganizingMachine {
-    static String queueDataFile = "Data/queueData.txt";
-	static int continueAfterRear = 0;
+    * System Overview: (Part 1) *
+    * Introduction to the SSM System *
+
+    To access our Self Service Machine (SSM),
+    obtaining an order from the Organizing Machine is mandatory.
+    Without an order, the SSM remains inactive due to built-in operational constraints.
+
+    * Order Management with LinkedList Queue *
+
+    We have utilized a LinkedList Queue for order data management based on the First In, First Out (FIFO) principle.
+
+    This dynamic system:
+    - Saves data in text files for efficient retrieval.
+    - Employs recursion for enhanced flexibility.
+    - Handles exceptions robustly, ensuring uninterrupted operation.
+
+                --(* Try it yourself!! *)--
+
+    Next Step
+    For further details, please proceed to Part 2 of our system explanation.
+     */
+
+
+public class OrganizingMachine extends SelfServiceMachine {
+
+    static String queueDataFile = "SSM_System/Data/OrganizingMachineData.txt";
+    static int continueAfterRear = 0;
+    static int rearMinusFront;
     static Scanner scanner = new Scanner(System.in);
 
+    public OrganizingMachine(int nationalID, String password) {
+        super(nationalID, password);
+    }
+
     public static void main(String[] args) throws IOException {
-    	storeFromFile();
+        loadQueueDataFromFile();
         try {
-        	mainQueueUI();
+            mainQueueUI();
         } catch (InterruptedException e) {
             System.err.println("Error during operation: " + e.getMessage());
         }
@@ -22,7 +52,14 @@ public class OrganizingMachine {
 
     static void mainQueueUI() throws InterruptedException, IOException {
         System.out.println("\nPress 1 to enter the queue of the SSM\nPress 2 for more details\n");
-        int choice = scanner.nextInt();
+        int choice = -1;
+        try {
+            choice = scanner.nextInt();
+        } catch (Exception e) {
+            e.getStackTrace();
+            scanner.nextLine();
+            mainQueueUI();
+        }
         switch (choice) {
             case 1:
                 continueAfterRear++;
@@ -40,92 +77,71 @@ public class OrganizingMachine {
 
     public static void enqueue(int value) throws IOException {
         Node newNode = new Node(value);
-        if (SelfServiceMachine.front == null) {
-            SelfServiceMachine.front = SelfServiceMachine.rear = newNode;
+        if (front == null) {
+            front = rear = newNode;
         } else {
-            SelfServiceMachine.rear.next = newNode;
-            newNode.prev = SelfServiceMachine.rear;
-            SelfServiceMachine.rear = newNode;
+            rear.next = newNode;
+            newNode.prev = rear;
+            rear = newNode;
         }
         System.out.println("Your turn number is: " + value);
-        System.out.println("Customers before you: "+SelfServiceMachine.getRearMinusFront());
-        storeToFile();
+        System.out.println("Customers before you: " + getRearMinusFront());
+        saveQueueDataToFile();
         try {
             mainQueueUI();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
     private static void addToQueue(int value) {
         Node newNode = new Node(value);
-        if (SelfServiceMachine.front == null) {
-            SelfServiceMachine.front = SelfServiceMachine.rear = newNode;
+        if (front == null) {
+            front = rear = newNode;
         } else {
-            SelfServiceMachine.rear.next = newNode;
-            newNode.prev = SelfServiceMachine.rear;
-            SelfServiceMachine.rear = newNode;
+            rear.next = newNode;
+            newNode.prev = rear;
+            rear = newNode;
         }
     }
+
     static void dequeue() {
-        if (SelfServiceMachine.front == null) {
-            SelfServiceMachine.front = SelfServiceMachine.rear = null;
+        if (front == null) {
+            front = rear = null;
         } else {
-            SelfServiceMachine.front = SelfServiceMachine.front.next;
-            SelfServiceMachine.front.prev = null;
+            front = front.next;
+            front.prev = null;
             try {
-				storeToFile();
-			} catch (IOException e) {
-				System.out.println("Saving data $Dequeue Method:: Failed!");
-				e.printStackTrace();
-			}
+                saveQueueDataToFile();
+            } catch (IOException e) {
+                System.out.println("Saving data $Dequeue Method:: Failed!");
+                e.printStackTrace();
+            }
         }
-    }
-    public static void displayFullQueue() {
-        if (SelfServiceMachine.front == null) {
-            System.out.println("Queue is empty");
-            return;
-        }
-        Node current = SelfServiceMachine.front;
-        while (current != null) {
-            System.out.print(current.data + " ");
-            current = current.next;
-        }
-        System.out.println();
-    }
-    public static void displayFinalQueueNum() {
-        if (SelfServiceMachine.front == null) {
-            System.out.println("Queue is empty");
-            return;
-        }
-        
-        Node current = SelfServiceMachine.front;
-        while (current.next != null) {
-            current = current.next;
-        }
-        System.out.println(current.data + " ");
     }
 
-
-    public static void storeToFile() throws IOException {
+    public static void saveQueueDataToFile() throws IOException {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(queueDataFile))) {
-            Node current = SelfServiceMachine.front;
+            Node current = front;
             while (current != null) {
                 bufferedWriter.write(Integer.toString(current.data));
                 bufferedWriter.newLine();
                 current = current.next;
             }
         } catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
+            System.err.println("Error storing data to file: " + e.getMessage());
         }
     }
-    public static void storeFromFile() throws IOException {
+
+    public static void loadQueueDataFromFile() throws IOException {
         File file = new File(queueDataFile);
         if (!file.exists()) {
             boolean fileCreated = file.createNewFile();
             if (!fileCreated) {
-                throw new IOException("Failed to create new file: " + queueDataFile);
+                throw new IOException("Failed to create a new file: " + queueDataFile);
             }
         }
+
         Scanner scan = new Scanner(file);
         while (scan.hasNextLine()) {
             try {
@@ -133,19 +149,25 @@ public class OrganizingMachine {
                 addToQueue(dataFromFile);
                 continueAfterRear = dataFromFile;
             } catch (java.util.NoSuchElementException e) {
-            	
+                e.getStackTrace();
             }
         }
         scan.close();
     }
-    public static void resetFile() throws IOException { 
+
+    public static void resetQueueDataFile() throws IOException {
         FileWriter fileWriter = new FileWriter(queueDataFile);
         PrintWriter printWriter = new PrintWriter(fileWriter);
         printWriter.print("");
         printWriter.close();
     }
+
     static void machDetails() throws InterruptedException, IOException {
         System.out.println("\n\nThis is the Organizing Machine\nIn order to use our SSM Please pick an order.");
         mainQueueUI();
+    }
+
+    public static int getRearMinusFront() {
+        return rearMinusFront = rear.data - front.data;
     }
 }
