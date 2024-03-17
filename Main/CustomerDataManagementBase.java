@@ -3,65 +3,33 @@ import java.util.*;
 import java.io.Serializable;
 
 
-/*
-
-    * System Overview: (Part 3) *
-    * Customer Data Management Base Overview *
-
-    This section focuses on the Customer Data Management Base,
-    a crucial component that handles all customer data dynamically and in real-time. It is designed to:
-
-    Automatically load and store customer data in alignment
-    with the SSM's requirements, ensuring seamless operation and data integrity.
-
-    * SSM's Dynamic Data Management *
-    The SSM's approach to maintaining a fully dynamic system includes:
-
-    - Current Data Storage Methods: Initially utilizing an array list for customer data,
-        with plans to transition to a binary tree structure.
-        This change aims to significantly reduce search times to approximately O(log n), enhancing efficiency.
-    - Dynamic Handling and Integration: Through recursive programming,
-        the system achieves remarkable flexibility in real-time data processing,
-        eliminating the need for restarts. It also:
-            - Ensures data is saved and retrieved as needed.
-            - Seamlessly interfaces with both the Organizing Machine and the CustomerDataManagement System.
-    - Security and Exception Handling:
-    Implements safeguards against misuse and employs sophisticated techniques for managing exceptions, ensuring system integrity and reliability.
-
-    * Continuation:
-    As the narrative on system functionalities concludes with Part 3, users are now equipped
-    with a comprehensive understanding of the dynamic interactions between the SSM and the Customer Data Management Base,
-    highlighting the system's efficiency, security, and adaptability.
-     */
-
 class CustomerDataManagementBase implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     //
     // Process helpers
-    static int storedNationalID;
-    static String storedpassword;
+    private static int storedNationalID;
+    private static String storedpassword;
 
-    static int inputNationIdForLogin;
-    static String inputtedPasswordForLoggingIn;
+    private static int inputNationIdForLogin;
+    private static String inputtedPasswordForLoggingIn;
 
-    static int inputtedNationalIdToRegister;
-    static String inputtedPasswordToRegister;
+    private static int inputtedNationalIdToRegister;
+    private static String inputtedPasswordToRegister;
 
-    static String inputtedFirstNameToRegister;
-    static String inputtedSecondNameToRegister;
-
-    static int accountNumberInArray;
+    private static String inputtedFirstNameToRegister;
+    private static String inputtedSecondNameToRegister;
 
     static int storedIdToTrans;
     static int inputtedIdToTrans;
 
-    static int nationalIDforChangingPassword;
-    static String passwordForChangingPassword;
+    private static int nationalIDforChangingPassword;
+    private static String passwordForChangingPassword;
 
-    static String newPasswordFirstTime;
-    static String newPasswordSecondTime;
+    private static String newPasswordFirstTime;
+    private static String newPasswordSecondTime;
 
+    private static int accountNumberInArray;
     //
     // Constructor data types
     private int nationalID;
@@ -73,17 +41,21 @@ class CustomerDataManagementBase implements Serializable {
     // Configurations
     static CustomerDataManagementBase customer = new CustomerDataManagementBase();
     protected static final List<CustomerDataManagementBase> accArrayData = new ArrayList<>();
-    static Scanner scanner = new Scanner(System.in);
-    static String accountsDataFile = "SSM_System/Data/CustomerAccountsData.ser";
+    private static Scanner scanner = new Scanner(System.in);
+    private static String accountsDataFile = "Data/CustomerAccountsData.ser";
     //
     // Limitations
-    static boolean storedFromFile = false;
-    static int threeTimesChanceRegisterNationID;
-    static int threeTimesChanceLogin;
-    static int threeTimesChancePassword;
-    static int threeTimesChanceIDforChangingPassword;
-    static int threeTimesChanceOldPasswordForChangingPassword;
+    private static boolean storedFromFileAccountsData = false;
+    private static int limitRegisterNationID;
+    private static int limitLogin;
+    private static int limitPassword;
+    private static int limitIDForChangingPassword;
+    private static int limitOldPasswordToChangingPassword;
+    private static int limitLoginProcess;
+    private static int limitNewPasswordForChangingIt;
 
+    //
+    //
     public CustomerDataManagementBase(int nationalID, String password) {
         this.nationalID = nationalID;
         this.password = password;
@@ -109,40 +81,41 @@ class CustomerDataManagementBase implements Serializable {
     }
 
     static private void inputIDForChangingPassword() throws IOException, InterruptedException, ClassNotFoundException {
-        if (getThreeTimesChanceIDforChangingPassword() < 3) {
-            //Create limitation for 3 chances after it exit();
+        if (getLimitIDForChangingPassword() < 3) {
+            setLimitIDForChangingPassword(getLimitIDForChangingPassword() + 1);
             System.out.println("Enter your Account national ID..");
             try {
                 setNationalIDforChangingPassword(scanner.nextInt());
             } catch (Exception e) {
                 e.getStackTrace();
-                System.out.println("Invalid input.");
+                System.out.println("Invalid input!!");
                 scanner.nextLine();
                 inputIDForChangingPassword();
             }
             if ((getNationalIDforChangingPassword() == getInputNationIdForLogin())) {
                 inputOldPasswordForChangingPassword();
             } else {
-                setThreeTimesChanceIDforChangingPassword(getThreeTimesChanceIDforChangingPassword() + 1);
+                setLimitIDForChangingPassword(getLimitIDForChangingPassword() + 1);
                 System.out.println("National ID Number for the Account is wrong!!");
                 inputIDForChangingPassword();
             }
         } else {
-            System.out.println("No more chances!!");
+            System.out.println("Chances are out!!");
             SelfServiceMachine.exit();
             return;
         }
     }
 
     static private void inputOldPasswordForChangingPassword() throws IOException, InterruptedException, ClassNotFoundException {
-        if (getThreeTimesChanceOldPasswordForChangingPassword() < 3) {
+        if (getLimitOldPasswordToChangingPassword() < 3) {
+            setLimitOldPasswordToChangingPassword(getLimitOldPasswordToChangingPassword() + 1);
             System.out.println("Enter you old password..");
             String oldPassword;
             try {
                 oldPassword = scanner.next();
             } catch (Exception e) {
                 e.getStackTrace();
-                System.out.println("Invalid input.");
+                System.out.println("Invalid input!!");
                 scanner.nextLine();
                 inputOldPasswordForChangingPassword();
                 return;
@@ -152,40 +125,45 @@ class CustomerDataManagementBase implements Serializable {
                 inputNewPasswordForChangingIt();
 
             } else {
-                System.out.println("Invalid password.");
+                System.out.println("Invalid password!!");
                 inputOldPasswordForChangingPassword();
             }
         } else {
-            System.out.println("Chances are out.");
+            System.out.println("Chances are out!!");
             SelfServiceMachine.exit();
         }
     }
 
     static private void inputNewPasswordForChangingIt() throws IOException, InterruptedException, ClassNotFoundException {
+        if (getLimitNewPasswordForChangingIt() < 5) {
+            setLimitNewPasswordForChangingIt(getLimitNewPasswordForChangingIt() + 1);
 
-        // Limit the process
-        System.out.println("Enter you new password..");
-        try {
-            newPasswordFirstTime = scanner.next();
-        } catch (Exception e) {
-            e.getStackTrace();
-            System.out.println("Invalid input.");
-            scanner.nextLine();
-            inputNewPasswordForChangingIt();
-            return;
-        }
-        if (newPasswordFirstTime.length() < 8) {
-            System.out.println("Invalid input. Your password should has more than 7 chars.");
-            scanner.nextLine();
-            inputNewPasswordForChangingIt(); // Repeat
-        } else {
-
-            if (!newPasswordFirstTime.equals(getInputtedPasswordForLoggingIn())) {
-                inputNewPasswordSecondTime(); // Next Step
-            } else {
-                System.out.println("Cannot use the same old password.");
+            System.out.println("Enter you new password..");
+            try {
+                newPasswordFirstTime = scanner.next();
+            } catch (Exception e) {
+                e.getStackTrace();
+                System.out.println("Invalid input!!");
+                scanner.nextLine();
                 inputNewPasswordForChangingIt();
+                return;
             }
+            if (newPasswordFirstTime.length() < 8) {
+                System.out.println("Invalid input!! Your password should has more than 7 chars.");
+                scanner.nextLine();
+                inputNewPasswordForChangingIt(); // Repeat
+            } else {
+
+                if (!newPasswordFirstTime.equals(getInputtedPasswordForLoggingIn())) {
+                    inputNewPasswordSecondTime(); // Next Step
+                } else {
+                    System.out.println("Cannot use the same old password.");
+                    inputNewPasswordForChangingIt();
+                }
+            }
+        } else {
+            System.out.println("Five chances out!!");
+            SelfServiceMachine.exit();
         }
     }
 
@@ -196,7 +174,7 @@ class CustomerDataManagementBase implements Serializable {
             newPasswordSecondTime = scanner.next();
         } catch (Exception e) {
             e.getStackTrace();
-            System.out.println("Invalid input.");
+            System.out.println("Invalid input!!");
             scanner.nextLine();
             inputNewPasswordSecondTime();
             return;
@@ -248,37 +226,39 @@ class CustomerDataManagementBase implements Serializable {
     }
 
     static protected void loadAccountsData() throws IOException, ClassNotFoundException {
-        if (!storedFromFile) {
-            storedFromFile = true;
+        if (!storedFromFileAccountsData) {
+            storedFromFileAccountsData = true;
+
             File file = new File(accountsDataFile);
-            FileInputStream fIn = null;
-            try {
-                fIn = new FileInputStream(file);
-            } catch (FileNotFoundException e) {
-                System.out.println(e);
-                file.createNewFile();
-                loadAccountsData();
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                boolean fileCreated = false;
+                try {
+                    fileCreated = file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (!fileCreated) {
+                    throw new IOException("Failed to create a new file: " + accountsDataFile);
+                }
             }
-            try (ObjectInputStream objIn = new ObjectInputStream(fIn)) {
+            try (FileInputStream fIn = new FileInputStream(file);
+                 ObjectInputStream objIn = new ObjectInputStream(fIn)) {
                 List<CustomerDataManagementBase> deserializedList = null;
                 try {
                     deserializedList = (List<CustomerDataManagementBase>) objIn.readObject();
                 } catch (ClassNotFoundException | NullPointerException e) {
-                    e.getStackTrace();
+                    e.printStackTrace();
                 }
                 accArrayData.clear();
-                try {
-
-                    assert deserializedList != null;
+                if (deserializedList != null) {
                     accArrayData.addAll(deserializedList);
-                } catch (NullPointerException e) {
-                    e.getStackTrace();
                 }
                 System.out.println(accArrayData);
+
             } catch (EOFException | NullPointerException e) {
                 System.out.println("End of file reached while reading from the object stream.");
             }
-
         }
     }
 
@@ -327,7 +307,7 @@ class CustomerDataManagementBase implements Serializable {
                 register();
                 break;
             default:
-                System.out.println("Invalid input,");
+                System.out.println("Invalid input!!");
                 LoginOrRegister();
                 break;
         }
@@ -337,8 +317,8 @@ class CustomerDataManagementBase implements Serializable {
     //
     // --- START OF LOGGING IN PROCESS --
     static private void login() throws InterruptedException, IOException, ClassNotFoundException {
-        if (threeTimesChanceLogin < 3) {
-            threeTimesChanceLogin++;
+        if (getLimitLogin() < 3) {
+            setLimitLogin(getLimitLogin() + 1);
             try {
                 loadAccountsData();
             } catch (Exception e) {
@@ -350,21 +330,27 @@ class CustomerDataManagementBase implements Serializable {
             checkAccountValidatedisity();
 
         } else {
-            System.out.println("Three times chance off");
+            System.out.println("Three chances out!!");
             SelfServiceMachine.exit();
         }
     }
 
     private static void getIDInputForLoggingIn() throws IOException, InterruptedException, ClassNotFoundException {
-        System.out.println("Enter your National ID..");
-        try {
-            setInputNationIdForLogin(scanner.nextInt());
-        } catch (Exception e) {
-            e.getStackTrace();
-            scanner.nextLine();
-            System.out.println("Invalid input,");
-            getIDInputForLoggingIn();
-            return;
+        if (getLimitLoginProcess() < 5) {
+            // the chances get decreased at the end of the process
+            System.out.println("Enter your National ID..");
+            try {
+                setInputNationIdForLogin(scanner.nextInt());
+            } catch (Exception e) {
+                e.getStackTrace();
+                scanner.nextLine();
+                System.out.println("Invalid input!!");
+                getIDInputForLoggingIn();
+                return;
+            }
+        } else {
+            System.out.println("Five chances out!!");
+            SelfServiceMachine.exit();
         }
     }
 
@@ -375,7 +361,7 @@ class CustomerDataManagementBase implements Serializable {
         } catch (Exception e) {
             e.getStackTrace();
             scanner.nextLine();
-            System.out.println("Invalid input,");
+            System.out.println("Invalid input!!");
             getPasswordInputForLoggingIn();
             return;
         }
@@ -404,6 +390,7 @@ class CustomerDataManagementBase implements Serializable {
         }
         if (!(getInputNationIdForLogin() == getStoredNationalID() && getInputtedPasswordForLoggingIn().equals(getStoredPassword()))) {
             System.out.println("National ID or password is incorrect!!\n");
+            setLimitLoginProcess(getLimitLoginProcess() + 1); // Chances --;
             login();
         }
     }
@@ -425,7 +412,8 @@ class CustomerDataManagementBase implements Serializable {
         if (getInputtedNationalIdToRegister() != getStoredNationalID()) {
             registerPassword();
             try {
-                registerTheseData = new CustomerDataManagementBase(getInputtedFirstNameToRegister(), getInputtedSecondNameToRegister(), getInputtedNationalIdToRegister(), getInputtedPasswordToRegister());
+                registerTheseData = new CustomerDataManagementBase(getInputtedFirstNameToRegister(), getInputtedSecondNameToRegister(),
+                        getInputtedNationalIdToRegister(), getInputtedPasswordToRegister());
             } catch (Exception e) {
                 return;
             }
@@ -445,13 +433,13 @@ class CustomerDataManagementBase implements Serializable {
         try {
             setInputtedFirstNameToRegister(scanner.next());
         } catch (Exception e) {
-            System.out.println("Invalid input.");
-            scanner.nextLine(); // Consume the invalid input
+            System.out.println("Invalid input!!");
+            scanner.nextLine();
             registerFirstName();
             return;
         }
         if (getInputtedFirstNameToRegister().matches(".*\\d.*")) {
-            System.out.println("Invalid input. Please enter letters only!");
+            System.out.println("Invalid input!! Please enter letters only!");
             registerFirstName();
         }
     }
@@ -462,25 +450,25 @@ class CustomerDataManagementBase implements Serializable {
         try {
             setInputtedSecondNameToRegister(scanner.next());
         } catch (Exception e) {
-            System.out.println("Invalid input,");
+            System.out.println("Invalid input!!");
             scanner.nextLine();
             registerFirstName();
             return;
         }
         if (getInputtedFirstNameToRegister().matches(".*\\d.*")) {
-            System.out.println("Invalid input. Please enter letters only!");
+            System.out.println("Invalid input!! Please enter letters only!");
             registerSecondName();
         }
     }
 
     private static void registerNationID() throws InterruptedException, IOException, ClassNotFoundException {
-        if (threeTimesChanceRegisterNationID < 3) {
-            threeTimesChanceRegisterNationID++;
+        if (getLimitRegisterNationID() < 3) {
+            setLimitRegisterNationID(getLimitRegisterNationID() + 1);
             System.out.println("Enter your National ID (exactly 8 digits)..");
             try {
                 setInputtedNationalIdToRegister(scanner.nextInt());
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input,");
+                System.out.println("Invalid input!!");
                 scanner.nextLine();
                 registerNationID();
                 return;
@@ -491,7 +479,7 @@ class CustomerDataManagementBase implements Serializable {
             }
             checkIfNationIdUnique();
         } else {
-            System.out.println("Three times chance off");
+            System.out.println("Three chances out!!");
             SelfServiceMachine.exit();
         }
     }
@@ -504,7 +492,7 @@ class CustomerDataManagementBase implements Serializable {
                 return;
             }
             if (getInputtedNationalIdToRegister() == getStoredNationalID()) {
-                System.out.println("You have been registered already! \n");
+                System.out.println("You have an account already! \n");
                 login();
                 return;
             }
@@ -512,8 +500,8 @@ class CustomerDataManagementBase implements Serializable {
     }
 
     private static void registerPassword() throws InterruptedException, IOException, ClassNotFoundException {
-        if (threeTimesChancePassword < 3) {
-            threeTimesChancePassword++;
+        if (getLimitPassword() < 3) {
+            setLimitPassword(getLimitPassword());
             System.out.println("Enter Your Password..(Equal to or more than 8 chars.)");
             try {
                 setInputtedPasswordToRegister(scanner.next());
@@ -524,13 +512,13 @@ class CustomerDataManagementBase implements Serializable {
                 return;
             }
             if (getInputtedPasswordToRegister().length() < 8) {
-                System.out.println("Invalid input,");
+                System.out.println("Invalid input!!");
                 scanner.nextLine();
                 registerPassword();
                 return;
             }
         } else {
-            System.out.println("Three times chance off");
+            System.out.println("Three chances out!!");
             SelfServiceMachine.exit();
         }
     }
@@ -627,28 +615,28 @@ class CustomerDataManagementBase implements Serializable {
         SelfServiceMachine.inputtedIdToTrans = inputtedIdToTrans;
     }
 
-    public static int getThreeTimesChanceRegisterNationID() {
-        return threeTimesChanceRegisterNationID;
+    public static int getLimitRegisterNationID() {
+        return limitRegisterNationID;
     }
 
-    public static void setThreeTimesChanceRegisterNationID(int threeTimesChanceRegisterNationID) {
-        CustomerDataManagementBase.threeTimesChanceRegisterNationID = threeTimesChanceRegisterNationID;
+    public static void setLimitRegisterNationID(int threeTimesChanceRegisterNationID) {
+        CustomerDataManagementBase.limitRegisterNationID = threeTimesChanceRegisterNationID;
     }
 
-    public static int getThreeTimesChanceLogin() {
-        return threeTimesChanceLogin;
+    public static int getLimitLogin() {
+        return limitLogin;
     }
 
-    public static void setThreeTimesChanceLogin(int threeTimesChanceLogin) {
-        CustomerDataManagementBase.threeTimesChanceLogin = threeTimesChanceLogin;
+    public static void setLimitLogin(int threeTimesChanceLogin) {
+        CustomerDataManagementBase.limitLogin = threeTimesChanceLogin;
     }
 
-    public static int getThreeTimesChancePassword() {
-        return threeTimesChancePassword;
+    public static int getLimitPassword() {
+        return limitPassword;
     }
 
-    public static void setThreeTimesChancePassword(int threeTimesChancePassword) {
-        CustomerDataManagementBase.threeTimesChancePassword = threeTimesChancePassword;
+    public static void setLimitPassword(int threeTimesChancePassword) {
+        CustomerDataManagementBase.limitPassword = threeTimesChancePassword;
     }
 
     public String getFirstName() {
@@ -683,20 +671,20 @@ class CustomerDataManagementBase implements Serializable {
         CustomerDataManagementBase.passwordForChangingPassword = passwordForChangingPassword;
     }
 
-    public static int getThreeTimesChanceIDforChangingPassword() {
-        return threeTimesChanceIDforChangingPassword;
+    public static int getLimitIDForChangingPassword() {
+        return limitIDForChangingPassword;
     }
 
-    public static void setThreeTimesChanceIDforChangingPassword(int threeTimesChanceIDforChangingPassword) {
-        CustomerDataManagementBase.threeTimesChanceIDforChangingPassword = threeTimesChanceIDforChangingPassword;
+    public static void setLimitIDForChangingPassword(int threeTimesChanceIDforChangingPassword) {
+        CustomerDataManagementBase.limitIDForChangingPassword = threeTimesChanceIDforChangingPassword;
     }
 
-    public static int getThreeTimesChanceOldPasswordForChangingPassword() {
-        return threeTimesChanceOldPasswordForChangingPassword;
+    public static int getLimitOldPasswordToChangingPassword() {
+        return limitOldPasswordToChangingPassword;
     }
 
-    public static void setThreeTimesChanceOldPasswordForChangingPassword(int threeTimesChanceOldPasswordForChangingPassword) {
-        CustomerDataManagementBase.threeTimesChanceOldPasswordForChangingPassword = threeTimesChanceOldPasswordForChangingPassword;
+    public static void setLimitOldPasswordToChangingPassword(int threeTimesChanceOldPasswordForChangingPassword) {
+        CustomerDataManagementBase.limitOldPasswordToChangingPassword = threeTimesChanceOldPasswordForChangingPassword;
     }
 
     public void setPassword(String password) {
@@ -725,6 +713,22 @@ class CustomerDataManagementBase implements Serializable {
 
     public static void setInputtedSecondNameToRegister(String inputtedSecondNameToRegister) {
         CustomerDataManagementBase.inputtedSecondNameToRegister = inputtedSecondNameToRegister;
+    }
+
+    public static int getLimitNewPasswordForChangingIt() {
+        return limitNewPasswordForChangingIt;
+    }
+
+    public static void setLimitNewPasswordForChangingIt(int fiveTimesChanceForNewPasswordForChangingIt) {
+        CustomerDataManagementBase.limitNewPasswordForChangingIt = fiveTimesChanceForNewPasswordForChangingIt;
+    }
+
+    public static int getLimitLoginProcess() {
+        return limitLoginProcess;
+    }
+
+    public static void setLimitLoginProcess(int fiveTimesChanceForLoginProcess) {
+        CustomerDataManagementBase.limitLoginProcess = fiveTimesChanceForLoginProcess;
     }
 
     @Override

@@ -3,38 +3,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 
-    /*
-    * System Overview: (Part 2) *
-    * Integration with Customer Data Management *
-
-    The primary machinery, or SSM, operates in conjunction with the CustomerDataManagement System
-    for comprehensive management of customer-related data. This enables the Self Service Machine to offer:
-
-    - A unique, bank-independent operation.
-    - A wide range of operations eliminating the need for human intervention.
-    - Users can either create a new account or log into an existing one,
-          availing themselves of various banking services. Continuous enhancements are underway to include more operations.
-
-    * Enhancing SSM Dynamics *
-    To augment the dynamism of the SSM:
-    - Current Data Management: Customer data is currently managed using an array list,
-           with plans to transition to a binary tree structure to optimize search times to O(log n).
-    - Recursion and Real-time Data Handling: The SSM employs recursion for flexibility
-           and manages customer data in real-time, necessitating no restarts for data updates.
-    - Integration and Security Measures: It seamlessly interacts with both the Organizing Machine
-           and the CustomerDataManagementSystem, incorporates measures against misuse,
-           and employs advanced exception handling techniques.
-
-
-                --(* Try it yourself!! *)--
-
-
-    Next Step
-    Please proceed to Part 3 for further exploration of the system’s capabilities and advancements.
-
-*/
-
-
 class SelfServiceMachine extends CustomerDataManagementBase {
 
     static double balance;
@@ -45,13 +13,17 @@ class SelfServiceMachine extends CustomerDataManagementBase {
     static int depositeProcessLimit = 0;
     static int withdrawProcessLimit = 0;
     static int transferProcessLimit = 0;
+    static int amountToTransferChances = 0;
     //
     // Process helpers
     static int mainTurn = 0;
     static boolean isFinalCustomerPassed = false;
     static int searchHelper;
     static int indexForReceiver;
-
+    static double amountToTrans;
+    static double amountToWithdraw;
+    static double amountToDeposit;
+    static double mainCustomerBalance;
     //
     // Node identifiers
     static Node front;
@@ -158,13 +130,20 @@ class SelfServiceMachine extends CustomerDataManagementBase {
     }
 
     static private void inputIDToTransfer() throws IOException, InterruptedException, ClassNotFoundException {
+        transferProcessLimit++;
+        if (transferProcessLimit > 5) {
+            System.out.println("Five chances out!!");
+            exit();
+            return;
+        }
+
         System.out.println("Enter the ID number of the person you want to transfer to");
         try {
             setInputtedIdToTrans(scanner.nextInt());
         } catch (Exception e) {
             e.getStackTrace();
             scanner.nextLine();
-            System.out.println("Invalid input,");
+            System.out.println("Invalid input!!");
             inputIDToTransfer();
             return;
         }
@@ -181,7 +160,7 @@ class SelfServiceMachine extends CustomerDataManagementBase {
 
                 setSearchHelper(localSearchHelper);
                 System.out.println("Founded Receiver account successfully.");
-                continueTransferProcess();
+                inputAmountToTransfer();
                 return;
             } else if (getInputNationIdForLogin() == getInputtedIdToTrans()) {
 
@@ -194,41 +173,57 @@ class SelfServiceMachine extends CustomerDataManagementBase {
         semiUI();
     }
 
-
-    static private void continueTransferProcess() throws IOException, InterruptedException, ClassNotFoundException {
-        System.out.println("Enter the amount to transfer to account ID number: " + getInputtedIdToTrans() + " ||");
-        double amountToTrans;
+    static private void inputAmountToTransfer() throws IOException, InterruptedException, ClassNotFoundException {
+        amountToTransferChances++;
+        if (amountToTransferChances > 5) {
+            System.out.println("Five chances out!!");
+            return;
+        }
+        System.out.println("Enter amount to transfer to the selected account..");
         try {
             amountToTrans = scanner.nextDouble();
         } catch (Exception e) {
             e.getStackTrace();
             e.getStackTrace();
             scanner.nextLine();
-            transferMoney();
+            inputAmountToTransfer();
             return;
         }
-        double mainCustomerBalance = customer.getBalance();
-        if (amountToTrans > 10) {
-            if (amountToTrans <= mainCustomerBalance) {
-                double toTransCustomerBalance = accArrayData.get(searchHelper).getBalance();
-                double balanceAfterDeduct = mainCustomerBalance - amountToTrans;
-
-                updateUserBalance((ArrayList<CustomerDataManagementBase>) accArrayData, getInputNationIdForLogin(), balanceAfterDeduct);
-                double balanceAfterAdded = toTransCustomerBalance + amountToTrans;
-
-                searchSenderAccount(); // searchSenderAccount
-                updateReceiverBalance((ArrayList<CustomerDataManagementBase>) accArrayData, SelfServiceMachine.getIndexForReceiver(), balanceAfterAdded);
-
-                System.out.println("Transferred successfully.");
-            } else {
-                System.out.println("Your balance is not enough!");
-                System.out.println("Your balance is: " + mainCustomerBalance + "$\n");
-            }
-        } else {
-            System.out.println("Cannot transfer less than 10$");
+        if (amountToTrans <= 10) {
+            System.out.println("You Cannot transfer less than 10$");
+            inputAmountToTransfer();
+            return;
         }
+        if (amountToTrans > 50000) {
+            System.out.println("You cannot transfer more than 50000$ per time");
+            inputAmountToTransfer();
+            return;
+        }
+        continueTransferProcess(); // if passed all conditions continue
+    }
+
+    static private void continueTransferProcess() throws IOException, InterruptedException, ClassNotFoundException {
+
+        double mainCustomerBalance = customer.getBalance();
+        if (amountToTrans > mainCustomerBalance) {
+            System.out.println("Your balance is not enough!");
+            System.out.println("Your balance is: " + mainCustomerBalance + "$\n");
+            semiUI();
+            return;
+        }
+        double toTransCustomerBalance = accArrayData.get(searchHelper).getBalance();
+        double balanceAfterDeduct = mainCustomerBalance - amountToTrans;
+
+        updateUserBalance((ArrayList<CustomerDataManagementBase>) accArrayData, getInputNationIdForLogin(), balanceAfterDeduct);
+        customer.setBalance(balanceAfterDeduct);
+        double balanceAfterAdded = toTransCustomerBalance + amountToTrans;
+
+        searchSenderAccount(); // searchSenderAccount
+        updateReceiverBalance((ArrayList<CustomerDataManagementBase>) accArrayData, SelfServiceMachine.getIndexForReceiver(), balanceAfterAdded);
+
+        System.out.println("Transferred successfully.");
+
         semiUI();
-        return;
     }
 
     static private void searchSenderAccount() {
@@ -246,71 +241,89 @@ class SelfServiceMachine extends CustomerDataManagementBase {
     // --- END OF TRANSFER PROCESS ---
     // ---------------------------------
 
-    static protected void withdraw() throws InterruptedException, IOException, ClassNotFoundException {
+    static private void inputAmountToWithdraw() throws IOException, InterruptedException, ClassNotFoundException {
+        withdrawProcessLimit++;
+        if (withdrawProcessLimit > 5) {
+            System.out.println("Five chances out!!");
+            exit();
+            return;
+        }
         System.out.println("Enter the amount to withdraw..");
-        double withdrawInput;
         try {
-            withdrawInput = scanner.nextDouble();
+            amountToWithdraw = scanner.nextDouble();
         } catch (Exception e) {
             e.getStackTrace();
             scanner.nextLine();
-            withdraw();
+            inputAmountToWithdraw();
             return;
         }
-
-        if (withdrawProcessLimit < 6) {
-            withdrawProcessLimit++;
-            if (withdrawInput <= customer.getBalance()) {
-                if ((withdrawInput % 50 == 0 || withdrawInput % 100 == 0) && withdrawInput != 0) {
-                    balance = customer.getBalance();
-                    balance = customer.getBalance() - withdrawInput;
-                    customer.setBalance(balance);
-                    updateUserBalance((ArrayList<CustomerDataManagementBase>) accArrayData, getInputNationIdForLogin(), customer.getBalance());
-                    System.out.println("Your new balance is: " + customer.getBalance() + "$");
-                    savaAccountsData();
-                    semiUI();
-                } else {
-                    System.out.println("Please enter a number multiples of 50 or 100..");
-                    withdraw();
-                }
-            } else {
-                System.out.println("Your balance is not enough!");
-                System.out.println("Your balance is: " + customer.getBalance() + "$\n");
-                mainUI();
-            }
+        if (amountToWithdraw > 5000) {
+            System.out.println("You cannot withdraw more than 5000$ per time");
+            inputAmountToWithdraw();
+            return;
+        }
+        if (!((amountToWithdraw % 50 == 0 || amountToWithdraw % 100 == 0) && amountToWithdraw != 0)) {
+            System.out.println("Please enter a number multiples of 50 or 100..");
+            inputAmountToWithdraw();
+            return;
+        }
+        if (amountToWithdraw <= customer.getBalance()) {
+            withdraw(); // Continue process
         } else {
-            exit();
+            System.out.println("Your balance is not enough!");
+            System.out.println("Your balance is: " + customer.getBalance() + "$\n");
+            mainUI();
         }
     }
 
+    static protected void withdraw() throws InterruptedException, IOException, ClassNotFoundException {
+        inputAmountToWithdraw();
+        balance = customer.getBalance();
+        balance = customer.getBalance() - amountToWithdraw;
+        customer.setBalance(balance);
+        updateUserBalance((ArrayList<CustomerDataManagementBase>) accArrayData, getInputNationIdForLogin(), customer.getBalance());
+        System.out.println("Your new balance is: " + customer.getBalance() + "$");
+        savaAccountsData();
+        semiUI();
+    }
+
     static protected void deposit() throws InterruptedException, IOException, ClassNotFoundException {
-        System.out.println("Please enter amount to deposit..");
-        double depositInput;
+        inputForDeposit();
+        balance = amountToDeposit + customer.getBalance();
+        customer.setBalance(balance);
+        updateUserBalance((ArrayList<CustomerDataManagementBase>) accArrayData, getInputNationIdForLogin(), customer.getBalance());
+        savaAccountsData();
+        System.out.println("Your new balance is: " + customer.getBalance() + "$\n");
+        Thread.sleep(200);
+        semiUI();
+    }
+
+    static private void inputForDeposit() throws IOException, InterruptedException, ClassNotFoundException {
+        depositeProcessLimit++;
+        if (depositeProcessLimit > 5) {
+            System.out.println("Five chances out!!");
+            exit();
+            return;
+        }
+        System.out.println("Enter amount to deposit..");
         try {
-            depositInput = scanner.nextDouble();
+            amountToDeposit = scanner.nextDouble();
         } catch (Exception e) {
             e.getStackTrace();
             scanner.nextLine();
-            deposit();
+            inputForDeposit();
             return;
         }
-        depositeProcessLimit++;
-        if (depositeProcessLimit < 6) {
-            if ((depositInput % 50 == 0 || depositInput % 100 == 0) && depositInput != 0) {
-                balance = depositInput + customer.getBalance();
-                customer.setBalance(balance);
-                updateUserBalance((ArrayList<CustomerDataManagementBase>) accArrayData, getInputNationIdForLogin(), customer.getBalance());
-                savaAccountsData();
-                System.out.println("Your new balance is: " + customer.getBalance() + "$\n");
-                Thread.sleep(200);
-                semiUI();
-            } else {
-                System.out.println("Please enter a number multiples of 50 or 100..");
-                deposit();
-            }
-        } else {
-            exit();
+        if (amountToDeposit > 150000) {
+            System.out.println("You cannot deposit more than 150000$ per time");
+            inputForDeposit();
+            return;
         }
+        if (!((amountToDeposit % 50 == 0 || amountToDeposit % 100 == 0) && amountToDeposit != 0)) {
+            System.out.println("Please enter a number multiples of 50 or 100..");
+            inputForDeposit();
+            return; // if needed
+        } // If passed until here Continue process
     }
 
     static protected void balance() throws InterruptedException, IOException, ClassNotFoundException {
@@ -324,9 +337,15 @@ class SelfServiceMachine extends CustomerDataManagementBase {
         mainUILimit = 0;
         depositeProcessLimit = 0;
         withdrawProcessLimit = 0;
-        setThreeTimesChanceLogin(0);
-        setThreeTimesChancePassword(0);
-        setThreeTimesChanceRegisterNationID(0);
+        transferProcessLimit = 0;
+        setLimitLogin(0);
+        setLimitPassword(0);
+        setLimitRegisterNationID(0);
+        setLimitIDForChangingPassword(0);
+        setLimitOldPasswordToChangingPassword(0);
+        setLimitLoginProcess(0);
+        setLimitNewPasswordForChangingIt(0);
+
         balance = customer.getBalance();
         mainTurn--;
         LoginOrRegister();

@@ -1,40 +1,15 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-    /*
-
-    * System Overview: (Part 1) *
-    * Introduction to the SSM System *
-
-    To access our Self Service Machine (SSM),
-    obtaining an order from the Organizing Machine is mandatory.
-    Without an order, the SSM remains inactive due to built-in operational constraints.
-
-    * Order Management with LinkedList Queue *
-
-    We have utilized a LinkedList Queue for order data management based on the First In, First Out (FIFO) principle.
-
-    This dynamic system:
-    - Saves data in text files for efficient retrieval.
-    - Employs recursion for enhanced flexibility.
-    - Handles exceptions robustly, ensuring uninterrupted operation.
-
-                --(* Try it yourself!! *)--
-
-    Next Step
-    For further details, please proceed to Part 2 of our system explanation.
-     */
 
 
 public class OrganizingMachine extends SelfServiceMachine {
 
-    static String queueDataFile = "SSM_System/Data/OrganizingMachineData.txt";
+    static String queueDataFile = "Data/OrganizingMachineData.txt";
     static int continueAfterRear = 0;
     static int rearMinusFront;
+    static boolean storedFromFileQueueData = false;
     static Scanner scanner = new Scanner(System.in);
 
     public OrganizingMachine(int nationalID, String password) {
@@ -134,25 +109,40 @@ public class OrganizingMachine extends SelfServiceMachine {
     }
 
     public static void loadQueueDataFromFile() throws IOException {
-        File file = new File(queueDataFile);
-        if (!file.exists()) {
-            boolean fileCreated = file.createNewFile();
-            if (!fileCreated) {
-                throw new IOException("Failed to create a new file: " + queueDataFile);
+        if(!storedFromFileQueueData) {
+            storedFromFileQueueData = true;
+            File file = new File(queueDataFile);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                boolean fileCreated = false;
+                try {
+                    fileCreated = file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (!fileCreated) {
+                    throw new IOException("Failed to create a new file: " + queueDataFile);
+                }
             }
-        }
-
-        Scanner scan = new Scanner(file);
-        while (scan.hasNextLine()) {
+            Scanner scan = null;
             try {
-                int dataFromFile = scan.nextInt();
-                addToQueue(dataFromFile);
-                continueAfterRear = dataFromFile;
-            } catch (java.util.NoSuchElementException e) {
-                e.getStackTrace();
+                scan = new Scanner(file);
+                while (scan.hasNextLine()) {
+                    try {
+                        int dataFromFile = scan.nextInt();
+                        addToQueue(dataFromFile);
+                        continueAfterRear = dataFromFile;
+                    } catch (NoSuchElementException e) {
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                if (scan != null) {
+                    scan.close();
+                }
             }
         }
-        scan.close();
     }
 
     public static void resetQueueDataFile() throws IOException {
