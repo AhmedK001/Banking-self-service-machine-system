@@ -65,7 +65,7 @@ class SelfServiceMachine extends CustomerDataManagementBase {
 
             switch (yoInput) {
                 case 1:
-                    withdraw();
+                    inputAmountToWithdraw();
                     break;
                 case 2:
                     deposit();
@@ -248,7 +248,7 @@ class SelfServiceMachine extends CustomerDataManagementBase {
             exit();
             return;
         }
-        System.out.println("Enter the amount to withdraw..");
+        System.out.println("Enter amount to withdraw..");
         try {
             amountToWithdraw = scanner.nextDouble();
         } catch (Exception e) {
@@ -277,7 +277,6 @@ class SelfServiceMachine extends CustomerDataManagementBase {
     }
 
     static protected void withdraw() throws InterruptedException, IOException, ClassNotFoundException {
-        inputAmountToWithdraw();
         balance = customer.getBalance();
         balance = customer.getBalance() - amountToWithdraw;
         customer.setBalance(balance);

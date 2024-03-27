@@ -1,3 +1,7 @@
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import java.io.*;
 import java.util.*;
 import java.io.Serializable;
@@ -42,7 +46,8 @@ class CustomerDataManagementBase implements Serializable {
     static CustomerDataManagementBase customer = new CustomerDataManagementBase();
     protected static final List<CustomerDataManagementBase> accArrayData = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
-    private static String accountsDataFile = "Data/CustomerAccountsData.ser";
+    private static String accountsDataFile = "SSM_System/Data/CustomerAccountsData.json";
+    static final ObjectMapper objectMapper = new ObjectMapper();
     //
     // Limitations
     private static boolean storedFromFileAccountsData = false;
@@ -216,19 +221,13 @@ class CustomerDataManagementBase implements Serializable {
     //
     // --- START OF LOADING, UPDATING DATA PROCESSES ---
     static protected void savaAccountsData() throws IOException {
-        File file = new File(accountsDataFile);
-        FileOutputStream fOut = new FileOutputStream(file);
-        ObjectOutputStream objOut = new ObjectOutputStream(fOut);
-
-        objOut.writeObject(accArrayData);
-        objOut.flush();
-        objOut.close();
+        objectMapper.writeValue(new File(accountsDataFile), accArrayData);
     }
 
     static protected void loadAccountsData() throws IOException, ClassNotFoundException {
         if (!storedFromFileAccountsData) {
             storedFromFileAccountsData = true;
-
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
             File file = new File(accountsDataFile);
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
@@ -242,22 +241,18 @@ class CustomerDataManagementBase implements Serializable {
                     throw new IOException("Failed to create a new file: " + accountsDataFile);
                 }
             }
-            try (FileInputStream fIn = new FileInputStream(file);
-                 ObjectInputStream objIn = new ObjectInputStream(fIn)) {
-                List<CustomerDataManagementBase> deserializedList = null;
-                try {
-                    deserializedList = (List<CustomerDataManagementBase>) objIn.readObject();
-                } catch (ClassNotFoundException | NullPointerException e) {
-                    e.printStackTrace();
-                }
+            List<CustomerDataManagementBase> deserializedList = null;
+            try {
+                deserializedList = objectMapper.readValue(new File(accountsDataFile), new TypeReference<List<CustomerDataManagementBase>>() {
+                });
                 accArrayData.clear();
                 if (deserializedList != null) {
                     accArrayData.addAll(deserializedList);
                 }
-                System.out.println(accArrayData);
-
-            } catch (EOFException | NullPointerException e) {
-                System.out.println("End of file reached while reading from the object stream.");
+                String accountsDataJsonFormat = objectMapper.writeValueAsString(accArrayData);
+                System.out.println(accountsDataJsonFormat);
+            } catch (Exception e) {
+                System.out.println(e);
             }
         }
     }
@@ -455,7 +450,7 @@ class CustomerDataManagementBase implements Serializable {
             registerFirstName();
             return;
         }
-        if (getInputtedFirstNameToRegister().matches(".*\\d.*")) {
+        if (getInputtedSecondNameToRegister().matches(".*\\d.*")) {
             System.out.println("Invalid input!! Please enter letters only!");
             registerSecondName();
         }
@@ -493,7 +488,7 @@ class CustomerDataManagementBase implements Serializable {
             }
             if (getInputtedNationalIdToRegister() == getStoredNationalID()) {
                 System.out.println("You have an account already! \n");
-                login();
+                getInputForLoginOrRegister();
                 return;
             }
         }
