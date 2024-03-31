@@ -3,18 +3,16 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 
-
 public class OrganizingMachine extends SelfServiceMachine {
+    // Node identifiers
+    static Node front;
+    static Node rear;
 
     static String queueDataFile = "Data/OrganizingMachineData.txt";
     static int continueAfterRear = 0;
     static int rearMinusFront;
     static boolean storedFromFileQueueData = false;
     static Scanner scanner = new Scanner(System.in);
-
-    public OrganizingMachine(int nationalID, String password) {
-        super(nationalID, password);
-    }
 
     public static void main(String[] args) throws IOException {
         loadQueueDataFromFile();
@@ -109,7 +107,7 @@ public class OrganizingMachine extends SelfServiceMachine {
     }
 
     public static void loadQueueDataFromFile() throws IOException {
-        if(!storedFromFileQueueData) {
+        if (!storedFromFileQueueData) {
             storedFromFileQueueData = true;
             File file = new File(queueDataFile);
             if (!file.exists()) {
