@@ -1,0 +1,43 @@
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.exe
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.deps.json
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.runtimeconfig.json
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.dll
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.pdb
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.AssemblyInfoInputs.cache
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.AssemblyInfo.cs
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.csproj.CoreCompileInputs.cache
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.dll
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\refint\Main.dll
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.pdb
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.genruntimeconfig.cache
+C:\Users\Semi TUF\Desktop\giit\My-Github\SSM_System\Main\obj\Debug\net8.0\ref\Main.dll
+C:\0Mine\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.exe
+C:\0Mine\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.deps.json
+C:\0Mine\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.runtimeconfig.json
+C:\0Mine\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.dll
+C:\0Mine\My-Github\SSM_System\Main\bin\Debug\net8.0\Main.pdb
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.GeneratedMSBuildEditorConfig.editorconfig
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.AssemblyInfoInputs.cache
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.AssemblyInfo.cs
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.csproj.CoreCompileInputs.cache
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.dll
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\refint\Main.dll
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.pdb
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\Main.genruntimeconfig.cache
+C:\0Mine\My-Github\SSM_System\Main\obj\Debug\net8.0\ref\Main.dll
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\bin\Debug\net8.0\Main.exe
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\bin\Debug\net8.0\Main.deps.json
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\bin\Debug\net8.0\Main.runtimeconfig.json
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\bin\Debug\net8.0\Main.dll
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\bin\Debug\net8.0\Main.pdb
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\Main.GeneratedMSBuildEditorConfig.editorconfig
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\Main.AssemblyInfoInputs.cache
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\Main.AssemblyInfo.cs
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\Main.csproj.CoreCompileInputs.cache
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\Main.sourcelink.json
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\Main.dll
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\refint\Main.dll
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\Main.pdb
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\Main.genruntimeconfig.cache
+C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\obj\Debug\net8.0\ref\Main.dll
