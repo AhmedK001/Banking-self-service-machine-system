@@ -34,6 +34,7 @@ public class SelfServiceMachine : UserDataManager
     public static readonly string ANSI_BRIGHT_GREEN = "\u001B[92m";
     public static readonly string ANSI_BRIGHT_WHITE = "\u001B[97m";
 
+    static BankStatement _bankStatement = new BankStatement();
 
     public SelfServiceMachine()
     {
@@ -41,7 +42,9 @@ public class SelfServiceMachine : UserDataManager
 
     public static void Main(string[] args)
     {
+        DataManager dataManager = new DataManager(_bankStatement);
         LoadAccountsData(); // For loading the customers accounts data from json
+        dataManager.LoadStatementData();
         startPoint(); // from here we start
     }
 
@@ -49,6 +52,12 @@ public class SelfServiceMachine : UserDataManager
     {
         Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "========================");
         Console.WriteLine(ANSI_BRIGHT_GREEN + "Welcome press 0 to start.\n\n" + ANSI_RESET);
+        
+        InputForStartPoint();
+    }
+
+    private static void InputForStartPoint()
+    {
         int startPointInput;
         try
         {
@@ -61,6 +70,11 @@ public class SelfServiceMachine : UserDataManager
             return;
         }
 
+        ChooseOfStartPoint(startPointInput); // continue
+    }
+
+    private static void ChooseOfStartPoint(int startPointInput)
+    {
         switch (startPointInput)
         {
             case 0:
@@ -72,100 +86,120 @@ public class SelfServiceMachine : UserDataManager
         }
     }
 
-    public static void MainUI()
+    public static void MainUi()
     {
-        if (mainUILimit < 6)
-        {
-            mainUILimit++;
-            Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "==================================" + ANSI_RESET);
-            Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "We are providing these services only for you:\n\n");
-            Console.WriteLine(ANSI_BRIGHT_GREEN + "Press 1 for withdraw\nPress 2 for deposit");
-            Console.WriteLine("Press 3 for balance\nPress 4 to transfer\nPress 9 to update password");
-            Console.WriteLine("\nPress 0 to log out\n" + ANSI_RESET);
-            int yoInput;
-            try
-            {
-                yoInput = Convert.ToInt32(Console.ReadLine());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.StackTrace);
-                Console.ReadLine();
-                MainUI();
-                return;
-            }
-
-            switch (yoInput)
-            {
-                case 1:
-                    InputAmountToWithdraw();
-                    break;
-                case 2:
-                    Deposit();
-                    break;
-                case 3:
-                    Balance();
-                    break;
-                case 4:
-                    TransferMoney();
-                    break;
-                case 9:
-                    ChangePassword();
-                    break;
-                case 0:
-                    Exit();
-                    break;
-                default:
-                    Console.WriteLine("Invalid option. Please try again.");
-                    MainUI();
-                    break;
-            }
-        }
-        else
+        if (mainUILimit >= 6)
         {
             Exit();
         }
+
+        mainUILimit++;
+            Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "==================================" + ANSI_RESET);
+            Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "We are providing these services only for you:\n\n");
+            Console.WriteLine(ANSI_BRIGHT_GREEN + "Press 1 for withdraw\nPress 2 for deposit");
+            Console.WriteLine(
+                "Press 3 for balance\nPress 4 to transfer\nPress 5 for account statements\nPress 9 to update password");
+            Console.WriteLine("\nPress 0 to log out\n" + ANSI_RESET);
+            
+            InputForMainUi(); // continue
     }
 
-    public static void SemiUI()
+    private static void InputForMainUi()
     {
-        if (semiUILimit < 6)
+        int inputForMainUI;
+        try
         {
-            semiUILimit++;
+            inputForMainUI = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (Exception e)
+        {
+            MainUi();
+            return;
+        }
+        
+        ChooseOfMainUi(inputForMainUI); // continue
+    }
+
+    private static void ChooseOfMainUi(int inputForMainUi)
+    {
+        switch (inputForMainUi)
+        {
+            case 1:
+                InputAmountToWithdraw();
+                break;
+            case 2:
+                Deposit();
+                break;
+            case 3:
+                Balance();
+                break;
+            case 4:
+                TransferMoney();
+                break;
+            case 5:
+                Statements();
+                break;
+            case 9:
+                ChangePassword();
+                break;
+            case 0:
+                Exit();
+                break;
+            default:
+                Console.WriteLine("Invalid option. Please try again.");
+                MainUi();
+                break;
+        }
+    }
+
+    public static void SemiUi()
+    {
+        if (semiUILimit >= 6)
+        {
+            Exit();
+        }
+
+        semiUILimit++;
             Console.WriteLine(ANSI_BRIGHT_GREEN +
                               BOLD +
                               "Press 1 return to the main menu\nPress 0 to log out\n" +
                               ANSI_RESET);
-            int yoInput;
-            try
-            {
-                yoInput = Convert.ToInt32(Console.ReadLine());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.StackTrace);
-                Console.ReadLine();
-                MainUI();
-                return;
-            }
+            
+            InputForSemiUi();
+    }
 
-            switch (yoInput)
-            {
-                case 1:
-                    MainUI();
-                    break;
-                case 0:
-                    Exit();
-                    break;
-                default:
-                    Console.WriteLine("Invalid option. Please try again.");
-                    SemiUI();
-                    break;
-            }
-        }
-        else
+    private static void InputForSemiUi()
+    {
+        int inputForSemiUi;
+        try
         {
-            Exit();
+            inputForSemiUi = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.StackTrace);
+            Console.ReadLine();
+            MainUi();
+            return;
+        }
+
+        ChooseOfSemiUi(inputForSemiUi);
+    }
+
+    private static void ChooseOfSemiUi(int inputForSemiUi)
+    {
+        switch (inputForSemiUi)
+        {
+            case 1:
+                MainUi();
+                break;
+            case 0:
+                Exit();
+                break;
+            default:
+                Console.WriteLine("Invalid option. Please try again.");
+                SemiUi();
+                break;
         }
     }
 
@@ -173,10 +207,12 @@ public class SelfServiceMachine : UserDataManager
     // --- Start OF TRANSFER PROCESS ---
     static protected void TransferMoney()
     {
-        if (transferProcessLimit < 6)
+        if (transferProcessLimit >= 6)
         {
-            InputIDToTransfer();
+            Exit();
         }
+
+        InputIDToTransfer(); // continue
     }
 
     static private void InputIDToTransfer()
@@ -205,27 +241,27 @@ public class SelfServiceMachine : UserDataManager
             return;
         }
 
-        UserAvlTree.SearchOnTreeForReceiver(InputtedIdToTrans);
+        UserBinaryTree.SearchOnTreeForReceiver(InputtedIdToTrans);
         // Method above mentions checkExistsForReceiverAccount() when finish
     }
 
     public static void CheckExistsForReceiverAccount()
     {
-        if ((InputtedIdToTrans == UserAvlTree.SearchMethodArrayForReceiver[0].NationalID) &&
-            (UserAvlTree.SearchMethodArray[0].NationalID != UserAvlTree.SearchMethodArrayForReceiver[0].NationalID))
+        if ((InputtedIdToTrans == UserBinaryTree.SearchMethodArrayForReceiver[0].NationalID) &&
+            (UserBinaryTree.SearchMethodArray[0].NationalID != UserBinaryTree.SearchMethodArrayForReceiver[0].NationalID))
         {
             InputAmountToTransfer(); // Continue if found receiver account
             return;
         }
-        else if (InputtedIdToTrans == UserAvlTree.SearchMethodArray[0].NationalID)
+        else if (InputtedIdToTrans == UserBinaryTree.SearchMethodArray[0].NationalID)
         {
             Console.WriteLine(ANSI_RED + BOLD + "Cannot transfer to yourself" + ANSI_RESET);
-            SemiUI();
+            SemiUi();
             return;
         }
 
         Console.WriteLine(ANSI_RED + BOLD + "No account exists under this ID number" + ANSI_RESET);
-        SemiUI();
+        SemiUi();
     }
 
     static private void InputAmountToTransfer()
@@ -272,7 +308,7 @@ public class SelfServiceMachine : UserDataManager
 
     static private void ContinueTransferProcess()
     {
-        double mainCustomerBalance = UserAvlTree.SearchMethodArray[0].Balance;
+        double mainCustomerBalance = UserBinaryTree.SearchMethodArray[0].Balance;
         if (amountToTrans > mainCustomerBalance)
         {
             Console.WriteLine(ANSI_RED + BOLD + "Your balance is not enough!" + ANSI_RESET);
@@ -282,24 +318,26 @@ public class SelfServiceMachine : UserDataManager
                               mainCustomerBalance +
                               "$\n" +
                               ANSI_RESET);
-            SemiUI();
+            SemiUi();
             return;
         }
 
-        double receiverCustomerBalance = UserAvlTree.SearchMethodArrayForReceiver[0].Balance;
+        double receiverCustomerBalance = UserBinaryTree.SearchMethodArrayForReceiver[0].Balance;
         // Update the main user balance
         double balanceAfterDeduct = mainCustomerBalance - amountToTrans;
-        UserAvlTree.SearchMethodArray[0].Balance = (balanceAfterDeduct);
-        UserAvlTree.UpdateNewChanges();
+        UserBinaryTree.SearchMethodArray[0].Balance = (balanceAfterDeduct);
+        UserBinaryTree.UpdateNewChanges();
         // Update the receiver balance
         double balanceAfterAdded = receiverCustomerBalance + amountToTrans;
-        UserAvlTree.SearchMethodArrayForReceiver[0].Balance = (balanceAfterAdded);
-        UserAvlTree.UpdateNewChangesForReceiver();
+        UserBinaryTree.SearchMethodArrayForReceiver[0].Balance = (balanceAfterAdded);
+        UserBinaryTree.UpdateNewChangesForReceiver();
+        // store operation data
+        _bankStatement.AddTransaction(InputNationIdForLogin,amountToTrans,InputtedIdToTrans);
 
         Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "====================" + ANSI_RESET);
         Console.WriteLine(ANSI_BRIGHT_GREEN + BOLD + "\n\nTransferred successfully." + ANSI_RED);
 
-        SemiUI();
+        SemiUi();
     }
 
     // --- END OF TRANSFER PROCESS ---
@@ -342,7 +380,7 @@ public class SelfServiceMachine : UserDataManager
             return;
         }
 
-        if (amountToWithdraw <= UserAvlTree.SearchMethodArray[0].Balance)
+        if (amountToWithdraw <= UserBinaryTree.SearchMethodArray[0].Balance)
         {
             Withdraw(); // Continue process
         }
@@ -352,46 +390,51 @@ public class SelfServiceMachine : UserDataManager
             Console.WriteLine(ANSI_BRIGHT_WHITE +
                               BOLD +
                               "Your balance is: " +
-                              UserAvlTree.SearchMethodArray[0].Balance +
+                              UserBinaryTree.SearchMethodArray[0].Balance +
                               "$\n" +
                               ANSI_RESET);
-            MainUI();
+            MainUi();
         }
     }
 
     static protected void Withdraw()
     {
         // Current balance - withdrawn amount
-        balance = UserAvlTree.SearchMethodArray[0].Balance;
-        balance = UserAvlTree.SearchMethodArray[0].Balance - amountToWithdraw;
-        UserAvlTree.SearchMethodArray[0].Balance = (balance);
+        balance = UserBinaryTree.SearchMethodArray[0].Balance;
+        balance = UserBinaryTree.SearchMethodArray[0].Balance - amountToWithdraw;
+        UserBinaryTree.SearchMethodArray[0].Balance = (balance);
         Console.WriteLine(ANSI_BRIGHT_WHITE +
                           BOLD +
                           "Your new balance is: " +
-                          UserAvlTree.SearchMethodArray[0].Balance +
+                          UserBinaryTree.SearchMethodArray[0].Balance +
                           "$" +
                           ANSI_RESET);
+        // store operation data
+        _bankStatement.AddWithdraw(InputNationIdForLogin,amountToWithdraw);
+        
         // Save the new account updates
-        UserAvlTree.UpdateNewChanges();
-        SemiUI();
+        UserBinaryTree.UpdateNewChanges();
+        SemiUi();
     }
 
     static protected void Deposit()
     {
         InputForDeposit();
-        balance = amountToDeposit + UserAvlTree.SearchMethodArray[0].Balance;
+        balance = amountToDeposit + UserBinaryTree.SearchMethodArray[0].Balance;
         // Update the new balance
-        UserAvlTree.SearchMethodArray[0].Balance = (balance);
-        UserAvlTree.UpdateNewChanges();
+        UserBinaryTree.SearchMethodArray[0].Balance = (balance);
+        UserBinaryTree.UpdateNewChanges();
 
         Console.WriteLine(ANSI_BRIGHT_WHITE +
                           BOLD +
                           "Your new balance is: " +
-                          UserAvlTree.SearchMethodArray[0].Balance +
+                          UserBinaryTree.SearchMethodArray[0].Balance +
                           "$\n" +
                           ANSI_RESET);
+        
+        _bankStatement.AddDeposit(InputNationIdForLogin,amountToDeposit);
         System.Threading.Thread.Sleep(200);
-        SemiUI();
+        SemiUi();
     }
 
     static private void InputForDeposit()
@@ -436,11 +479,63 @@ public class SelfServiceMachine : UserDataManager
         Console.WriteLine(ANSI_BRIGHT_WHITE +
                           BOLD +
                           "Your balance is: " +
-                          UserAvlTree.SearchMethodArray[0].Balance +
+                          UserBinaryTree.SearchMethodArray[0].Balance +
                           "$\n" +
                           ANSI_RESET);
         System.Threading.Thread.Sleep(200);
-        SemiUI();
+        SemiUi();
+    }
+
+    static protected void Statements()
+    {
+        Console.WriteLine(ANSI_BRIGHT_WHITE+BOLD+"================================");
+        Console.WriteLine("       Statements section:\n");
+        Console.WriteLine(ANSI_BRIGHT_GREEN+"Press 1 for Withdraw statement.");
+        Console.WriteLine("Press 2 for Deposit statement.");
+        Console.WriteLine("Press 3 for Transactions statement.");
+        Console.WriteLine("Press 4 for All statement operations");
+        Console.WriteLine(ANSI_BRIGHT_WHITE+"================================\n\n"+ANSI_RESET);
+
+        
+        InputStatementType(); // continue
+    }
+
+    static private void InputStatementType()
+    {
+        int type;
+        try
+        {
+            type = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (Exception e)
+        {
+            Statements();
+            return;
+        }
+        
+        StatementFilterType(type); // continue
+    }
+
+    static private void StatementFilterType(int type)
+    {
+        switch (type)
+        {
+            case 1:
+                _bankStatement.FilterStatementsByWithdraw(InputNationIdForLogin);
+                break;
+            case 2:
+                _bankStatement.FilterStatementsByDeposit(InputNationIdForLogin);
+                break;
+            case 3:
+                _bankStatement.FilterStatementsByTransaction(InputNationIdForLogin);
+                break;
+            case 4:
+                _bankStatement.FilterStatementsByID(InputNationIdForLogin);
+                break;
+            default:
+                Statements();
+                break;
+        }
     }
 
     static private void ResetLimits()

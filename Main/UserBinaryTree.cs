@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace SSM_IN_C_Sharp_;
 
-public class UserAvlTree
+public class UserBinaryTree
 {
     public static TreeNode Root { get; set; }
     public static List<UserDataManager> CustomerNodeDataList { get; } = new();
@@ -17,7 +17,7 @@ public class UserAvlTree
 
     public static List<UserDataManager> SearchMethodArray { get; } = new();
     public static List<UserDataManager> SearchMethodArrayForReceiver { get; } = new();
-    public static UserAvlTree userAvlTree { get; } = new();
+    public static UserBinaryTree userBinaryTree { get; } = new();
 
     public static void LoadTreeData()
     {
@@ -224,7 +224,7 @@ public class UserAvlTree
                           SelfServiceMachine.BOLD +
                           "\n\nNot found." +
                           SelfServiceMachine.ANSI_RESET);
-        SelfServiceMachine.SemiUI();
+        SelfServiceMachine.SemiUi();
     }
 
     // Method to display the binary tree if needed

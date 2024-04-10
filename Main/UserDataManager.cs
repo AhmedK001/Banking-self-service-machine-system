@@ -3,7 +3,7 @@ namespace SSM_IN_C_Sharp_;
 public class UserDataManager
 {
     // Process helpers
-    private static int InputNationIdForLogin { get; set; }
+    protected static int InputNationIdForLogin { get; set; }
     private static string InputtedPasswordForLoggingIn { get; set; }
     private static int InputtedNationalIdToRegister { get; set; }
     private static string InputtedPasswordToRegister { get; set; }
@@ -85,7 +85,7 @@ public class UserDataManager
             }
 
             if (NationalIDforChangingPassword ==
-                UserAvlTree.SearchMethodArray.First()
+                UserBinaryTree.SearchMethodArray.First()
                     .NationalID)
             {
                 InputOldPasswordForChangingPassword(); // continue
@@ -124,7 +124,7 @@ public class UserDataManager
                 return;
             }
 
-            if (oldPassword.Equals(UserAvlTree.SearchMethodArray.First()
+            if (oldPassword.Equals(UserBinaryTree.SearchMethodArray.First()
                     .Password))
             {
                 InputNewPasswordForChangingIt(); // continue
@@ -170,7 +170,7 @@ public class UserDataManager
             }
             else
             {
-                if (!NewPasswordFirstTime.Equals(UserAvlTree.SearchMethodArray.First()
+                if (!NewPasswordFirstTime.Equals(UserBinaryTree.SearchMethodArray.First()
                         .Password))
                 {
                     InputNewPasswordSecondTime(); // Continue
@@ -219,12 +219,12 @@ public class UserDataManager
     private static void ChangeOldPasswordFinalStep()
     {
         // Update password
-        UserAvlTree.SearchMethodArray.First()
+        UserBinaryTree.SearchMethodArray.First()
             .Password = NewPasswordSecondTime;
         // Update the new changes
-        UserAvlTree.UpdateNewChanges();
+        UserBinaryTree.UpdateNewChanges();
         Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "\n\nChanged your password successfully!" + ANSI_RESET);
-        SelfServiceMachine.SemiUI();
+        SelfServiceMachine.SemiUi();
     }
     // --- END OF UPDATING PASSWORD PROCESS ---
     //
@@ -235,17 +235,17 @@ public class UserDataManager
         if (!StoredFromFileAccountsData)
         {
             StoredFromFileAccountsData = true;
-            HandleDataFile(); // make sure of the data file
+            HandleDataFile(UserBinaryTree.TreeDataFile); // make sure of the data file
 
-            UserAvlTree.LoadTreeData();
+            UserBinaryTree.LoadTreeData();
             //Console.WriteLine("-----");
-            UserAvlTree.DisplayTree();
+            UserBinaryTree.DisplayTree();
         }
     }
 
-    private static void HandleDataFile()
+    public static void HandleDataFile(string filePath)
     {
-        var file = new FileInfo(UserAvlTree.TreeDataFile);
+        var file = new FileInfo(filePath);
         if (!file.Exists)
         {
             Directory.CreateDirectory(file.DirectoryName);
@@ -263,7 +263,7 @@ public class UserDataManager
             }
 
             if (!fileCreated)
-                throw new IOException("Failed to create a new file: " + UserAvlTree.TreeDataFile);
+                throw new IOException("Failed to create a new file: " + filePath);
         }
     }
 
@@ -384,9 +384,9 @@ public class UserDataManager
     private static void CheckAccountValidity(int inputNationIdForLogin,
         string inputPasswordForLogin)
     {
-        UserAvlTree.SearchOnTree(inputNationIdForLogin);
+        UserBinaryTree.SearchOnTree(inputNationIdForLogin);
         // if national id does not exist
-        if (UserAvlTree.SearchMethodArray.Count == 0)
+        if (UserBinaryTree.SearchMethodArray.Count == 0)
         {
             Console.WriteLine(ANSI_RED + BOLD + "National ID or password is incorrect!\n\n" + ANSI_RESET);
             LimitLoginProcess++; // Chances --;
@@ -395,8 +395,8 @@ public class UserDataManager
         }
 
         // if national id and password doesn't match
-        if (UserAvlTree.SearchMethodArray[0].NationalID != inputNationIdForLogin ||
-            !UserAvlTree.SearchMethodArray[0]
+        if (UserBinaryTree.SearchMethodArray[0].NationalID != inputNationIdForLogin ||
+            !UserBinaryTree.SearchMethodArray[0]
                 .Password.Equals(inputPasswordForLogin))
         {
             Console.WriteLine(ANSI_RED + BOLD + "National ID or password is incorrect!\n\n" + ANSI_RESET);
@@ -406,7 +406,7 @@ public class UserDataManager
         }
 
         Console.WriteLine(ANSI_BRIGHT_GREEN + BOLD + "\n\nSuccessfully logged in!" + ANSI_RESET);
-        SelfServiceMachine.MainUI(); // if passed continue
+        SelfServiceMachine.MainUi(); // if passed continue
     }
 
     // --- END OF LOGGING IN PROCESS ---
@@ -530,14 +530,14 @@ public class UserDataManager
 
     private static void CheckIfNationIdUnique()
     {
-        UserAvlTree.SearchOnTree(InputtedNationalIdToRegister);
-        if (UserAvlTree.SearchMethodArray.Count == 0)
+        UserBinaryTree.SearchOnTree(InputtedNationalIdToRegister);
+        if (UserBinaryTree.SearchMethodArray.Count == 0)
         {
             RegisterPassword(); // continue
             return;
         }
 
-        if (InputtedNationalIdToRegister == UserAvlTree.SearchMethodArray[0].NationalID)
+        if (InputtedNationalIdToRegister == UserBinaryTree.SearchMethodArray[0].NationalID)
         {
             Console.WriteLine(ANSI_BRIGHT_GREEN + BOLD + "You have an account already! \n" + ANSI_RESET);
             GetInputForLoginOrRegister();
@@ -590,8 +590,8 @@ public class UserDataManager
             InputtedNationalIdToRegister,
             InputtedPasswordToRegister);
 
-        UserAvlTree.InsertOnTheTree(userDataManager1);
-        UserAvlTree.StoreTreeData();
+        UserBinaryTree.InsertOnTheTree(userDataManager1);
+        UserBinaryTree.StoreTreeData();
         Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "=========================" + ANSI_RESET);
         Console.WriteLine(ANSI_BRIGHT_GREEN + BOLD + "Registered Successfully!!" + ANSI_RESET);
         Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "=========================\n\n" + ANSI_RESET);
