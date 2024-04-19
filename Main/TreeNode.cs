@@ -1,16 +1,18 @@
-namespace SSM_IN_C_Sharp_;
+using BankingSelfServiceMachine.Managers;
+
+namespace BankingSelfServiceMachine.Structures;
 
 using System;
 
-public class TreeNode : UserDataManager
+public class TreeNode : UserManager
 {
-    public UserDataManager Data { get; set; }
+    public UserManager Data { get; set; }
     public TreeNode Left { get; set; }
     public TreeNode Right { get; set; }
     public TreeNode LowestValueInTree { get; set; }
     public TreeNode HighestValueInTree { get; set; }
 
-    public TreeNode(UserDataManager data)
+    public TreeNode(UserManager data)
     {
         Data = data;
         Left = null;

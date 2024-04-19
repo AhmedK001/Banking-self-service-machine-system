@@ -1,22 +1,22 @@
-using System.Text.Json;
+using BankingSelfServiceMachine.Managers;
+using BankingSelfServiceMachine.UI;
 
-namespace SSM_IN_C_Sharp_;
+namespace BankingSelfServiceMachine.Structures;
+
+using System.Text.Json;
 
 public class UserBinaryTree
 {
     public static TreeNode Root { get; set; }
-    public static List<UserDataManager> CustomerNodeDataList { get; } = new();
+    public static List<UserManager> CustomerNodeDataList { get; } = new();
 
     public static readonly string SolutionDirectory =
-        Directory.GetParent(Directory.GetCurrentDirectory())
-            .Parent.Parent.FullName;
+        Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
 
-    public static readonly string TreeDataFile = Path.Combine(SolutionDirectory,
-        "Data",
-        "TreeData.json");
+    public static readonly string TreeDataFile = Path.Combine(SolutionDirectory, "Data", "TreeData.json");
 
-    public static List<UserDataManager> SearchMethodArray { get; } = new();
-    public static List<UserDataManager> SearchMethodArrayForReceiver { get; } = new();
+    public static List<UserManager> SearchMethodArray { get; } = new();
+    public static List<UserManager> SearchMethodArrayForReceiver { get; } = new();
     public static UserBinaryTree userBinaryTree { get; } = new();
 
     public static void LoadTreeData()
@@ -25,11 +25,9 @@ public class UserBinaryTree
         {
             var contens = File.ReadAllText(TreeDataFile);
             //Console.WriteLine(contens);
-            var deserializedUsers = JsonSerializer.Deserialize<List<UserDataManager>>(contens);
+            var deserializedUsers = JsonSerializer.Deserialize<List<UserManager>>(contens);
 
-            for (var i = 0;
-                 i < deserializedUsers.Count;
-                 i++)
+            for (var i = 0; i < deserializedUsers.Count; i++)
                 //Console.WriteLine(deserializedUsers[i]);
                 InsertOnTheTree(deserializedUsers[i]); // insert the data to tree
         }
@@ -39,7 +37,7 @@ public class UserBinaryTree
         }
     }
 
-    public static void InsertOnTheTree(UserDataManager data)
+    public static void InsertOnTheTree(UserManager data)
     {
         if (Root == null)
         {
@@ -48,13 +46,11 @@ public class UserBinaryTree
         }
         else
         {
-            InsertInOrder(data,
-                Root);
+            InsertInOrder(data, Root);
         }
     }
 
-    public static void InsertInOrder(UserDataManager data,
-        TreeNode node)
+    public static void InsertInOrder(UserManager data, TreeNode node)
     {
         var compareResult = data.NationalID.CompareTo(node.Data.NationalID);
         if (compareResult < 0)
@@ -66,8 +62,7 @@ public class UserBinaryTree
             }
             else
             {
-                InsertInOrder(data,
-                    node.Left);
+                InsertInOrder(data, node.Left);
             }
         }
         else if (compareResult > 0)
@@ -79,25 +74,19 @@ public class UserBinaryTree
             }
             else
             {
-                InsertInOrder(data,
-                    node.Right);
+                InsertInOrder(data, node.Right);
             }
         }
     }
 
     public static void StoreTreeData()
     {
-        JsonSerializerOptions options = new()
-        {
-            WriteIndented = true
-        };
+        JsonSerializerOptions options = new() { WriteIndented = true };
 
         try
         {
-            var contents = JsonSerializer.Serialize(CustomerNodeDataList,
-                options);
-            File.WriteAllText(TreeDataFile,
-                contents);
+            var contents = JsonSerializer.Serialize(CustomerNodeDataList, options);
+            File.WriteAllText(TreeDataFile, contents);
         }
         catch (Exception e)
         {
@@ -220,10 +209,7 @@ public class UserBinaryTree
         }
 
         SearchMethodArrayForReceiver.Clear();
-        Console.WriteLine(SelfServiceMachine.ANSI_RED +
-                          SelfServiceMachine.BOLD +
-                          "\n\nNot found." +
-                          SelfServiceMachine.ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "\n\nNot found." + FontStyle.ANSI_RESET);
         SelfServiceMachine.SemiUi();
     }
 

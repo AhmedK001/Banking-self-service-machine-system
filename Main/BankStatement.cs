@@ -1,18 +1,19 @@
-using System.Text.Json.Serialization;
+using BankingSelfServiceMachine.Operations;
+using BankingSelfServiceMachine.UI;
 
-namespace SSM_IN_C_Sharp_;
+namespace BankingSelfServiceMachine.Data;
+
+using System.Text.Json.Serialization;
 
 public class BankStatement
 {
     private int NationalID { set; get; }
     public int? ReciverID { set; get; }
-    [JsonIgnore]
-    public List<StatementOperation> Statements { set; get; }
-    [JsonIgnore]
-    public List<StatementOperation> SearchedStatements { get; set; }
+    [JsonIgnore] public List<StatementOperation> Statements { set; get; }
+    [JsonIgnore] public List<StatementOperation> SearchedStatements { get; set; }
     public DateTime Date { get; set; } = DateTime.Now;
 
-    
+
     public static readonly string BOLD = "\u001B[1m";
     public static readonly string ANSI_RESET = "\u001B[0m";
     public static readonly string ANSI_RED = "\u001B[31m";
@@ -21,8 +22,8 @@ public class BankStatement
 
     public BankStatement()
     {
-         Statements = new List<StatementOperation>();
-         SearchedStatements = new List<StatementOperation>();
+        Statements = new List<StatementOperation>();
+        SearchedStatements = new List<StatementOperation>();
     }
 
     public void AddWithdraw(int nationalId, double amount)
@@ -51,8 +52,9 @@ public class BankStatement
     {
         for (int i = 0; i < list.Count; i++)
         {
-            Console.WriteLine($"{ANSI_BRIGHT_WHITE+BOLD}\n{list[i].ToString()}\n{ANSI_RESET}");
+            Console.WriteLine($"{ANSI_BRIGHT_WHITE + BOLD}\n{list[i].ToString()}\n{ANSI_RESET}");
         }
+
         SelfServiceMachine.SemiUi();
     }
 
@@ -69,14 +71,14 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine(ANSI_RED+BOLD+"No Operations found."+ANSI_RESET);
+            Console.WriteLine(ANSI_RED + BOLD + "No Operations found." + ANSI_RESET);
             SelfServiceMachine.SemiUi();
             return;
         }
-        
+
         DisplayStatements(SearchedStatements);
     }
-    
+
     public void FilterStatementsByWithdraw(int nationalId)
     {
         SearchedStatements.Clear();
@@ -87,14 +89,14 @@ public class BankStatement
                 SearchedStatements.Add(Statements[i]);
             }
         }
-        
+
         if (!SearchedStatements.Any())
         {
             Console.WriteLine("No Operations found.");
             SelfServiceMachine.SemiUi();
             return;
         }
-        
+
         DisplayStatements(SearchedStatements);
     }
 
@@ -108,17 +110,17 @@ public class BankStatement
                 SearchedStatements.Add(Statements[i]);
             }
         }
-        
+
         if (!SearchedStatements.Any())
         {
             Console.WriteLine("No Operations found.");
             SelfServiceMachine.SemiUi();
             return;
         }
-        
-        DisplayStatements(SearchedStatements);
 
+        DisplayStatements(SearchedStatements);
     }
+
     public void FilterStatementsByTransaction(int nationalId)
     {
         SearchedStatements.Clear();
@@ -129,19 +131,18 @@ public class BankStatement
                 SearchedStatements.Add(Statements[i]);
             }
         }
-        
+
         if (!SearchedStatements.Any())
         {
             Console.WriteLine("No Operations found.");
             SelfServiceMachine.SemiUi();
             return;
         }
-        
+
         DisplayStatements(SearchedStatements);
     }
-    
-    public void FilterStatementsByDate(int nationalId,DateTime time)
+
+    public void FilterStatementsByDate(int nationalId, DateTime time)
     {
     }
-    
 }

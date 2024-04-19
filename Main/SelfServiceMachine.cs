@@ -1,15 +1,17 @@
+using BankingSelfServiceMachine.Data;
+using BankingSelfServiceMachine.Managers;
+using BankingSelfServiceMachine.Structures;
+
+namespace BankingSelfServiceMachine.UI;
+
 using System.Threading.Channels;
-
-namespace SSM_IN_C_Sharp_;
-
 using System;
 using System.IO;
 
-public class SelfServiceMachine : UserDataManager
+public class SelfServiceMachine : UserManager
 {
     static double balance;
 
-    //
     // Limitations
     static int semiUILimit = 0;
     static int mainUILimit = 0;
@@ -19,20 +21,12 @@ public class SelfServiceMachine : UserDataManager
 
     static int amountToTransferChances = 0;
 
-    //
     // Process helpers
     static double amountToTrans;
     static double amountToWithdraw;
 
     static double amountToDeposit;
 
-    //
-    //
-    public static readonly string BOLD = "\u001B[1m";
-    public static readonly string ANSI_RESET = "\u001B[0m";
-    public static readonly string ANSI_RED = "\u001B[31m";
-    public static readonly string ANSI_BRIGHT_GREEN = "\u001B[92m";
-    public static readonly string ANSI_BRIGHT_WHITE = "\u001B[97m";
 
     static BankStatement _bankStatement = new BankStatement();
 
@@ -43,16 +37,16 @@ public class SelfServiceMachine : UserDataManager
     public static void Main(string[] args)
     {
         DataManager dataManager = new DataManager(_bankStatement);
-        LoadAccountsData(); // For loading the customers accounts data from json
+        DataManager.LoadAccountsData(); // For loading the customers accounts data from json
         dataManager.LoadStatementData();
         startPoint(); // from here we start
     }
 
     protected static void startPoint()
     {
-        Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "========================");
-        Console.WriteLine(ANSI_BRIGHT_GREEN + "Welcome press 0 to start.\n\n" + ANSI_RESET);
-        
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "========================");
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + "Welcome press 0 to start.\n\n" + FontStyle.ANSI_RESET);
+
         InputForStartPoint();
     }
 
@@ -94,14 +88,16 @@ public class SelfServiceMachine : UserDataManager
         }
 
         mainUILimit++;
-            Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "==================================" + ANSI_RESET);
-            Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "We are providing these services only for you:\n\n");
-            Console.WriteLine(ANSI_BRIGHT_GREEN + "Press 1 for withdraw\nPress 2 for deposit");
-            Console.WriteLine(
-                "Press 3 for balance\nPress 4 to transfer\nPress 5 for account statements\nPress 9 to update password");
-            Console.WriteLine("\nPress 0 to log out\n" + ANSI_RESET);
-            
-            InputForMainUi(); // continue
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "==================================" +
+                          FontStyle.ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD +
+                          "We are providing these services only for you:\n\n");
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + "Press 1 for withdraw\nPress 2 for deposit");
+        Console.WriteLine(
+            "Press 3 for balance\nPress 4 to transfer\nPress 5 for account statements\nPress 9 to update password");
+        Console.WriteLine("\nPress 0 to log out\n" + FontStyle.ANSI_RESET);
+
+        InputForMainUi(); // continue
     }
 
     private static void InputForMainUi()
@@ -116,7 +112,7 @@ public class SelfServiceMachine : UserDataManager
             MainUi();
             return;
         }
-        
+
         ChooseOfMainUi(inputForMainUI); // continue
     }
 
@@ -154,18 +150,17 @@ public class SelfServiceMachine : UserDataManager
 
     public static void SemiUi()
     {
-        if (semiUILimit >= 6)
+        semiUILimit = AttemptsManager.IncreaseAttempts(semiUILimit);
+        if (AttemptsManager.IsExceededAttempts(semiUILimit, 6))
         {
-            Exit();
+            AttemptsManager.HandleExceededAttempts();
+            return;
         }
 
-        semiUILimit++;
-            Console.WriteLine(ANSI_BRIGHT_GREEN +
-                              BOLD +
-                              "Press 1 return to the main menu\nPress 0 to log out\n" +
-                              ANSI_RESET);
-            
-            InputForSemiUi();
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD +
+                          "Press 1 return to the main menu\nPress 0 to log out\n" + FontStyle.ANSI_RESET);
+
+        InputForSemiUi();
     }
 
     private static void InputForSemiUi()
@@ -177,8 +172,6 @@ public class SelfServiceMachine : UserDataManager
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.StackTrace);
-            Console.ReadLine();
             MainUi();
             return;
         }
@@ -207,9 +200,11 @@ public class SelfServiceMachine : UserDataManager
     // --- Start OF TRANSFER PROCESS ---
     static protected void TransferMoney()
     {
-        if (transferProcessLimit >= 6)
+        transferProcessLimit = AttemptsManager.IncreaseAttempts(transferProcessLimit);
+        if (AttemptsManager.IsExceededAttempts(transferProcessLimit, 6))
         {
-            Exit();
+            AttemptsManager.HandleExceededAttempts();
+            return;
         }
 
         InputIDToTransfer(); // continue
@@ -217,26 +212,21 @@ public class SelfServiceMachine : UserDataManager
 
     static private void InputIDToTransfer()
     {
-        transferProcessLimit++;
-        if (transferProcessLimit > 5)
+        transferProcessLimit = AttemptsManager.IncreaseAttempts(transferProcessLimit);
+        if (AttemptsManager.IsExceededAttempts(transferProcessLimit, 5))
         {
-            Console.WriteLine("Five chances out!!");
-            Exit();
+            AttemptsManager.HandleExceededAttempts();
             return;
         }
 
-        Console.WriteLine(ANSI_BRIGHT_GREEN +
-                          BOLD +
-                          "Enter the ID number of the person you want to transfer to\n\n" +
-                          ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD +
+                          "Enter the ID number of the person you want to transfer to\n\n" + FontStyle.ANSI_RESET);
         try
         {
             InputtedIdToTrans = Convert.ToInt32(Console.ReadLine());
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.StackTrace);
-            Console.WriteLine("Invalid input!!");
             InputIDToTransfer();
             return;
         }
@@ -248,57 +238,58 @@ public class SelfServiceMachine : UserDataManager
     public static void CheckExistsForReceiverAccount()
     {
         if ((InputtedIdToTrans == UserBinaryTree.SearchMethodArrayForReceiver[0].NationalID) &&
-            (UserBinaryTree.SearchMethodArray[0].NationalID != UserBinaryTree.SearchMethodArrayForReceiver[0].NationalID))
+            (UserBinaryTree.SearchMethodArray[0].NationalID !=
+             UserBinaryTree.SearchMethodArrayForReceiver[0].NationalID))
         {
             InputAmountToTransfer(); // Continue if found receiver account
             return;
         }
         else if (InputtedIdToTrans == UserBinaryTree.SearchMethodArray[0].NationalID)
         {
-            Console.WriteLine(ANSI_RED + BOLD + "Cannot transfer to yourself" + ANSI_RESET);
+            Console.WriteLine(
+                FontStyle.ANSI_RED + FontStyle.BOLD + "Cannot transfer to yourself" + FontStyle.ANSI_RESET);
             SemiUi();
             return;
         }
 
-        Console.WriteLine(ANSI_RED + BOLD + "No account exists under this ID number" + ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "No account exists under this ID number" +
+                          FontStyle.ANSI_RESET);
         SemiUi();
     }
 
     static private void InputAmountToTransfer()
     {
-        amountToTransferChances++;
-        if (amountToTransferChances > 5)
+        amountToTransferChances = AttemptsManager.IncreaseAttempts(amountToTransferChances);
+        if (AttemptsManager.IsExceededAttempts(amountToTransferChances, 5))
         {
-            Console.WriteLine("Five chances out!!");
+            AttemptsManager.HandleExceededAttempts();
             return;
         }
 
-        Console.WriteLine(ANSI_BRIGHT_GREEN +
-                          BOLD +
-                          "Enter amount to transfer to the selected account..\n\n" +
-                          ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD +
+                          "Enter amount to transfer to the selected account..\n\n" + FontStyle.ANSI_RESET);
         try
         {
             amountToTrans = Convert.ToDouble(Console.ReadLine());
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.StackTrace);
-            Console.ReadLine();
             InputAmountToTransfer();
             return;
         }
 
         if (amountToTrans <= 10)
         {
-            Console.WriteLine(ANSI_RED + BOLD + "You Cannot transfer less than 10$" + ANSI_RESET);
+            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "You Cannot transfer less than 10$" +
+                              FontStyle.ANSI_RESET);
             InputAmountToTransfer();
             return;
         }
 
         if (amountToTrans > 50000)
         {
-            Console.WriteLine(ANSI_RED + BOLD + "You cannot transfer more than 50000$ per time" + ANSI_RESET);
+            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "You cannot transfer more than 50000$ per time" +
+                              FontStyle.ANSI_RESET);
             InputAmountToTransfer();
             return;
         }
@@ -311,13 +302,10 @@ public class SelfServiceMachine : UserDataManager
         double mainCustomerBalance = UserBinaryTree.SearchMethodArray[0].Balance;
         if (amountToTrans > mainCustomerBalance)
         {
-            Console.WriteLine(ANSI_RED + BOLD + "Your balance is not enough!" + ANSI_RESET);
-            Console.WriteLine(ANSI_BRIGHT_WHITE +
-                              BOLD +
-                              "Your balance is: " +
-                              mainCustomerBalance +
-                              "$\n" +
-                              ANSI_RESET);
+            Console.WriteLine(
+                FontStyle.ANSI_RED + FontStyle.BOLD + "Your balance is not enough!" + FontStyle.ANSI_RESET);
+            Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "Your balance is: " + mainCustomerBalance +
+                              "$\n" + FontStyle.ANSI_RESET);
             SemiUi();
             return;
         }
@@ -332,10 +320,11 @@ public class SelfServiceMachine : UserDataManager
         UserBinaryTree.SearchMethodArrayForReceiver[0].Balance = (balanceAfterAdded);
         UserBinaryTree.UpdateNewChangesForReceiver();
         // store operation data
-        _bankStatement.AddTransaction(InputNationIdForLogin,amountToTrans,InputtedIdToTrans);
+        _bankStatement.AddTransaction(InputNationIdForLogin, amountToTrans, InputtedIdToTrans);
 
-        Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "====================" + ANSI_RESET);
-        Console.WriteLine(ANSI_BRIGHT_GREEN + BOLD + "\n\nTransferred successfully." + ANSI_RED);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "====================" + FontStyle.ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "\n\nTransferred successfully." +
+                          FontStyle.ANSI_RED);
 
         SemiUi();
     }
@@ -343,39 +332,39 @@ public class SelfServiceMachine : UserDataManager
     // --- END OF TRANSFER PROCESS ---
     // ---------------------------------
 
-    static private void InputAmountToWithdraw()
+    private static void InputAmountToWithdraw()
     {
-        withdrawProcessLimit++;
-        if (withdrawProcessLimit > 5)
+        withdrawProcessLimit = AttemptsManager.IncreaseAttempts(withdrawProcessLimit);
+        if (AttemptsManager.IsExceededAttempts(withdrawProcessLimit, 5))
         {
-            Console.WriteLine("Five chances out!!");
-            Exit();
+            AttemptsManager.HandleExceededAttempts();
             return;
         }
 
-        Console.WriteLine(ANSI_BRIGHT_GREEN + BOLD + "Enter amount to withdraw..\n\n" + ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "Enter amount to withdraw..\n\n" +
+                          FontStyle.ANSI_RESET);
         try
         {
             amountToWithdraw = Convert.ToDouble(Console.ReadLine());
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.StackTrace);
-            Console.ReadLine();
             InputAmountToWithdraw();
             return;
         }
 
         if (amountToWithdraw > 5000)
         {
-            Console.WriteLine(ANSI_RED + BOLD + "You cannot withdraw more than 5000$ per time" + ANSI_RESET);
+            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "You cannot withdraw more than 5000$ per time" +
+                              FontStyle.ANSI_RESET);
             InputAmountToWithdraw();
             return;
         }
 
         if (!((amountToWithdraw % 50 == 0 || amountToWithdraw % 100 == 0) && amountToWithdraw != 0))
         {
-            Console.WriteLine(ANSI_RED + BOLD + "Please enter a number multiples of 50 or 100..\n\n" + ANSI_RESET);
+            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD +
+                              "Please enter a number multiples of 50 or 100..\n\n" + FontStyle.ANSI_RESET);
             InputAmountToWithdraw();
             return;
         }
@@ -386,13 +375,10 @@ public class SelfServiceMachine : UserDataManager
         }
         else
         {
-            Console.WriteLine(ANSI_RED + BOLD + "Your balance is not enough!" + ANSI_RESET);
-            Console.WriteLine(ANSI_BRIGHT_WHITE +
-                              BOLD +
-                              "Your balance is: " +
-                              UserBinaryTree.SearchMethodArray[0].Balance +
-                              "$\n" +
-                              ANSI_RESET);
+            Console.WriteLine(
+                FontStyle.ANSI_RED + FontStyle.BOLD + "Your balance is not enough!" + FontStyle.ANSI_RESET);
+            Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "Your balance is: " +
+                              UserBinaryTree.SearchMethodArray[0].Balance + "$\n" + FontStyle.ANSI_RESET);
             MainUi();
         }
     }
@@ -403,15 +389,11 @@ public class SelfServiceMachine : UserDataManager
         balance = UserBinaryTree.SearchMethodArray[0].Balance;
         balance = UserBinaryTree.SearchMethodArray[0].Balance - amountToWithdraw;
         UserBinaryTree.SearchMethodArray[0].Balance = (balance);
-        Console.WriteLine(ANSI_BRIGHT_WHITE +
-                          BOLD +
-                          "Your new balance is: " +
-                          UserBinaryTree.SearchMethodArray[0].Balance +
-                          "$" +
-                          ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "Your new balance is: " +
+                          UserBinaryTree.SearchMethodArray[0].Balance + "$" + FontStyle.ANSI_RESET);
         // store operation data
-        _bankStatement.AddWithdraw(InputNationIdForLogin,amountToWithdraw);
-        
+        _bankStatement.AddWithdraw(InputNationIdForLogin, amountToWithdraw);
+
         // Save the new account updates
         UserBinaryTree.UpdateNewChanges();
         SemiUi();
@@ -425,14 +407,10 @@ public class SelfServiceMachine : UserDataManager
         UserBinaryTree.SearchMethodArray[0].Balance = (balance);
         UserBinaryTree.UpdateNewChanges();
 
-        Console.WriteLine(ANSI_BRIGHT_WHITE +
-                          BOLD +
-                          "Your new balance is: " +
-                          UserBinaryTree.SearchMethodArray[0].Balance +
-                          "$\n" +
-                          ANSI_RESET);
-        
-        _bankStatement.AddDeposit(InputNationIdForLogin,amountToDeposit);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "Your new balance is: " +
+                          UserBinaryTree.SearchMethodArray[0].Balance + "$\n" + FontStyle.ANSI_RESET);
+
+        _bankStatement.AddDeposit(InputNationIdForLogin, amountToDeposit);
         System.Threading.Thread.Sleep(200);
         SemiUi();
     }
@@ -447,7 +425,8 @@ public class SelfServiceMachine : UserDataManager
             return;
         }
 
-        Console.WriteLine(ANSI_BRIGHT_GREEN + BOLD + "Enter amount to deposit..\n\n" + ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "Enter amount to deposit..\n\n" +
+                          FontStyle.ANSI_RESET);
         try
         {
             amountToDeposit = Convert.ToDouble(Console.ReadLine());
@@ -462,41 +441,39 @@ public class SelfServiceMachine : UserDataManager
 
         if (amountToDeposit > 150000)
         {
-            Console.WriteLine(ANSI_RED + BOLD + "You cannot deposit more than 150000$ per time" + ANSI_RESET);
+            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "You cannot deposit more than 150000$ per time" +
+                              FontStyle.ANSI_RESET);
             InputForDeposit();
             return;
         }
 
         if (!((amountToDeposit % 50 == 0 || amountToDeposit % 100 == 0) && amountToDeposit != 0))
         {
-            Console.WriteLine(ANSI_RED + BOLD + "Please enter a number multiples of 50 or 100..\n\n" + ANSI_RESET);
+            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD +
+                              "Please enter a number multiples of 50 or 100..\n\n" + FontStyle.ANSI_RESET);
             InputForDeposit();
         } // If passed until here Continue process
     }
 
     static protected void Balance()
     {
-        Console.WriteLine(ANSI_BRIGHT_WHITE +
-                          BOLD +
-                          "Your balance is: " +
-                          UserBinaryTree.SearchMethodArray[0].Balance +
-                          "$\n" +
-                          ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "Your balance is: " +
+                          UserBinaryTree.SearchMethodArray[0].Balance + "$\n" + FontStyle.ANSI_RESET);
         System.Threading.Thread.Sleep(200);
         SemiUi();
     }
 
     static protected void Statements()
     {
-        Console.WriteLine(ANSI_BRIGHT_WHITE+BOLD+"================================");
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "================================");
         Console.WriteLine("       Statements section:\n");
-        Console.WriteLine(ANSI_BRIGHT_GREEN+"Press 1 for Withdraw statement.");
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + "Press 1 for Withdraw statement.");
         Console.WriteLine("Press 2 for Deposit statement.");
         Console.WriteLine("Press 3 for Transactions statement.");
         Console.WriteLine("Press 4 for All statement operations");
-        Console.WriteLine(ANSI_BRIGHT_WHITE+"================================\n\n"+ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + "================================\n\n" + FontStyle.ANSI_RESET);
 
-        
+
         InputStatementType(); // continue
     }
 
@@ -512,7 +489,7 @@ public class SelfServiceMachine : UserDataManager
             Statements();
             return;
         }
-        
+
         StatementFilterType(type); // continue
     }
 
@@ -559,12 +536,9 @@ public class SelfServiceMachine : UserDataManager
 
     static void SlowClearConsole()
     {
-        string clearLine = new string(' ',
-            Console.WindowWidth);
+        string clearLine = new string(' ', Console.WindowWidth);
 
-        for (int i = 0;
-             i < Console.WindowHeight;
-             i++)
+        for (int i = 0; i < Console.WindowHeight; i++)
         {
             Console.WriteLine(clearLine);
             Thread.Sleep(20);
@@ -575,7 +549,8 @@ public class SelfServiceMachine : UserDataManager
 
     static public void Exit()
     {
-        Console.WriteLine(ANSI_BRIGHT_WHITE + BOLD + "Thanks for using our SSM." + ANSI_RESET);
+        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "Thanks for using our SSM." +
+                          FontStyle.ANSI_RESET);
         Thread.Sleep(100);
 
         ResetLimits();

@@ -1,4 +1,6 @@
-namespace SSM_IN_C_Sharp_;
+using BankingSelfServiceMachine.Data;
+
+namespace BankingSelfServiceMachine.Operations;
 
 public class StatementOperation : BankStatement
 {
@@ -30,13 +32,11 @@ public class StatementOperation : BankStatement
     {
         if (ReciverID == null)
         {
-            return
-                $"National ID: {NationalID}\nDate: {Date}\nType: {Type}\nAmount: {Amount}";
+            return $"National ID: {NationalID}\nDate: {Date}\nType: {Type}\nAmount: {Amount}";
         }
-        else 
+        else
         {
-            return
-                $"National ID: {NationalID}\nReciver ID: {ReciverID}\nDate: {Date}\nType: {Type}\nAmount: {Amount}";
+            return $"National ID: {NationalID}\nReciver ID: {ReciverID}\nDate: {Date}\nType: {Type}\nAmount: {Amount}";
         }
     }
 }
