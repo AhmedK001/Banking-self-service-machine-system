@@ -1,10 +1,10 @@
-namespace BankingSelfServiceMachine.UI;
-
 using System.Text.RegularExpressions;
+
+namespace Main;
 
 public class InputsFilter
 {
-    public static bool IsItName(string name)
+    public static bool IsItName(string? name)
     {
         string pattern = @"^[a-zA-Z]{2,20}$";
         Regex regexNameFilter = new Regex(pattern);
@@ -22,21 +22,16 @@ public class InputsFilter
         return isItNationalId;
     }
 
-    public static bool IsItPassword(string password)
+    public static bool IsItPassword(string? password)
     {
         string pattern = "^[A-Za-z\\d]{8,20}$";
         Regex regexPasswordFilter = new Regex(pattern);
-        bool isItpassword = regexPasswordFilter.IsMatch(password.ToString());
+        bool isItPassword = regexPasswordFilter.IsMatch(password);
 
-        return isItpassword;
+        return isItPassword;
     }
 
-    // public bool Withdraw()
-    // {
-    //     return true;//
-    // }
-
-    public bool IsItMultipleOf50Or100(int amount)
+    public static bool IsItMultipleOf50Or100(double amount)
     {
         if (!((amount % 50 == 0 || amount % 100 == 0) && amount != 0 && amount > 0))
         {
@@ -46,9 +41,58 @@ public class InputsFilter
         return true;
     }
 
-    public string NotMultipleOf50Or100Message()
+    public static string NotMultipleOf50Or100Message()
     {
-        return FontStyle.ANSI_RED + FontStyle.BOLD + "Please enter a value that is a multiple of 50 or 100.\n\n" +
-               FontStyle.ANSI_RESET;
+        return "Please enter a value multiple of 50 or 100.";
+    }
+
+    public static bool IsItLessThan5001(double amount)
+    {
+        if (amount < 5001)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static string BiggerThan5000Message()
+    {
+        return "Amount should be equal to or less than 5000$!";
+    }
+
+    public static bool IsItLessThan10001(double amount)
+    {
+        if (amount < 10001)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static string BiggerThan10000Message()
+    {
+        return "Amount should be less than 10000$";
+    }
+    
+    public static bool IsItBiggerThan49(double amount)
+    {
+        if (amount > 49)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static string LessThan50Message()
+    {
+        return "Amount should be equal to or bigger than 50$!";
+    }
+
+    public static string InvalidInputMessage()
+    {
+        return "Input is invalid!";
     }
 }

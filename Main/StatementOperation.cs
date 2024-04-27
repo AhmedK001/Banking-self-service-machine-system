@@ -1,10 +1,8 @@
-using BankingSelfServiceMachine.Data;
-
-namespace BankingSelfServiceMachine.Operations;
+namespace Main;
 
 public class StatementOperation : BankStatement
 {
-    public int NationalID { get; set; }
+    public int NationalId { get; set; }
     public string Type { set; get; }
     public double Amount { set; get; }
     //public string Description { set; get; }
@@ -15,28 +13,28 @@ public class StatementOperation : BankStatement
 
     public StatementOperation(int nationalId, DateTime date, string type, double amount)
     {
-        NationalID = nationalId;
+        NationalId = nationalId;
         Type = type;
         Amount = amount;
     }
 
     public StatementOperation(int nationalId, DateTime date, string type, double amount, int reciverId)
     {
-        NationalID = nationalId;
+        NationalId = nationalId;
         Type = type;
         Amount = amount;
-        ReciverID = reciverId;
+        ReciverId = reciverId;
     }
 
     public override string ToString()
     {
-        if (ReciverID == null)
+        if (ReciverId == null)
         {
-            return $"National ID: {NationalID}\nDate: {Date}\nType: {Type}\nAmount: {Amount}";
+            return $"National ID: {NationalId}\nDate: {Date}\nType: {Type}\nAmount: {Amount}";
         }
         else
         {
-            return $"National ID: {NationalID}\nReciver ID: {ReciverID}\nDate: {Date}\nType: {Type}\nAmount: {Amount}";
+            return $"National ID: {NationalId}\nReciver ID: {ReciverId}\nDate: {Date}\nType: {Type}\nAmount: {Amount}";
         }
     }
 }

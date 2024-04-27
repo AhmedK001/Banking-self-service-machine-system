@@ -1,10 +1,30 @@
-namespace BankingSelfServiceMachine.UI;
+namespace Main;
 
 public class FontStyle
 {
-    public static readonly string BOLD = "\u001B[1m";
-    public static readonly string ANSI_RESET = "\u001B[0m";
-    public static readonly string ANSI_RED = "\u001B[31m";
-    public static readonly string ANSI_BRIGHT_GREEN = "\u001B[92m";
-    public static readonly string ANSI_BRIGHT_WHITE = "\u001B[97m";
+    private const string Bold = "\u001B[1m";
+    private const string Reset = "\u001B[0m";
+    private const string BrightRed = "\u001B[31m";
+    private const string BrightGreen = "\u001B[92m";
+    private const string BrightWhite = "\u001B[97m";
+
+    public static string SpaceLine()
+    {
+        return White("*======================*");
+    }
+
+    public static string White(string text)
+    {
+        return BrightWhite + Bold + text + Reset;
+    }
+
+    public static string Red(string text)
+    {
+        return BrightRed + Bold + text + Reset;
+    }
+
+    public static string Green(string text)
+    {
+        return BrightGreen + Bold + text + Reset;
+    }
 }

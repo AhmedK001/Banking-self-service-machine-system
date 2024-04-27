@@ -1,24 +1,14 @@
-using BankingSelfServiceMachine.Operations;
-using BankingSelfServiceMachine.UI;
-
-namespace BankingSelfServiceMachine.Data;
-
 using System.Text.Json.Serialization;
+
+namespace Main;
 
 public class BankStatement
 {
-    private int NationalID { set; get; }
-    public int? ReciverID { set; get; }
+    private int NationalId { set; get; }
+    public int? ReciverId { set; get; }
     [JsonIgnore] public List<StatementOperation> Statements { set; get; }
     [JsonIgnore] public List<StatementOperation> SearchedStatements { get; set; }
     public DateTime Date { get; set; } = DateTime.Now;
-
-
-    public static readonly string BOLD = "\u001B[1m";
-    public static readonly string ANSI_RESET = "\u001B[0m";
-    public static readonly string ANSI_RED = "\u001B[31m";
-    public static readonly string ANSI_BRIGHT_GREEN = "\u001B[92m";
-    public static readonly string ANSI_BRIGHT_WHITE = "\u001B[97m";
 
     public BankStatement()
     {
@@ -29,41 +19,41 @@ public class BankStatement
     public void AddWithdraw(int nationalId, double amount)
     {
         Statements.Add(new StatementOperation(nationalId, Date, "Withdraw", amount));
-        DataManager _dataManager = new DataManager(this);
+        DataHandler dataHandler = new DataHandler(this);
 
-        _dataManager.StoreStatementData();
+        dataHandler.StoreStatementData();
     }
 
     public void AddDeposit(int nationalId, double amount)
     {
         Statements.Add(new StatementOperation(nationalId, Date, "Deposit", amount));
-        DataManager dataManager = new DataManager(this);
-        dataManager.StoreStatementData();
+        DataHandler dataHandler = new DataHandler(this);
+        dataHandler.StoreStatementData();
     }
 
-    public void AddTransaction(int nationalId, double amount, int reciverID)
+    public void AddTransaction(int nationalId, double amount, int reciverId)
     {
-        Statements.Add(new StatementOperation(nationalId, Date, "Transaction", amount, reciverID));
-        DataManager _dataManager = new DataManager(this);
-        _dataManager.StoreStatementData();
+        Statements.Add(new StatementOperation(nationalId, Date, "Transaction", amount, reciverId));
+        DataHandler dataHandler = new DataHandler(this);
+        dataHandler.StoreStatementData();
     }
 
     public void DisplayStatements(List<StatementOperation> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
-            Console.WriteLine($"{ANSI_BRIGHT_WHITE + BOLD}\n{list[i].ToString()}\n{ANSI_RESET}");
+            Console.WriteLine(FontStyle.White($"\n{list[i].ToString()}\n"));
         }
 
-        SelfServiceMachine.SemiUi();
+        ServiceMachine.SemiUi();
     }
 
-    public void FilterStatementsByID(int nationalId)
+    public void FilterStatementsById(int nationalId)
     {
         SearchedStatements.Clear();
         for (int i = 0; i < Statements.Count; i++)
         {
-            if (Statements[i].NationalID == nationalId)
+            if (Statements[i].NationalId == nationalId)
             {
                 SearchedStatements.Add(Statements[i]);
             }
@@ -71,8 +61,8 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine(ANSI_RED + BOLD + "No Operations found." + ANSI_RESET);
-            SelfServiceMachine.SemiUi();
+            Console.WriteLine(FontStyle.Red("No Operations found."));
+            ServiceMachine.SemiUi();
             return;
         }
 
@@ -84,7 +74,7 @@ public class BankStatement
         SearchedStatements.Clear();
         for (int i = 0; i < Statements.Count; i++)
         {
-            if (Statements[i].NationalID == nationalId && Statements[i].Type.ToLower().Equals("withdraw"))
+            if (Statements[i].NationalId == nationalId && Statements[i].Type.ToLower().Equals("withdraw"))
             {
                 SearchedStatements.Add(Statements[i]);
             }
@@ -92,8 +82,8 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine("No Operations found.");
-            SelfServiceMachine.SemiUi();
+            Console.WriteLine(FontStyle.Red("No Operations found."));
+            ServiceMachine.SemiUi();
             return;
         }
 
@@ -105,7 +95,7 @@ public class BankStatement
         SearchedStatements.Clear();
         for (int i = 0; i < Statements.Count; i++)
         {
-            if (Statements[i].NationalID == nationalId && Statements[i].Type.ToLower().Equals("deposit"))
+            if (Statements[i].NationalId == nationalId && Statements[i].Type.ToLower().Equals("deposit"))
             {
                 SearchedStatements.Add(Statements[i]);
             }
@@ -113,8 +103,8 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine("No Operations found.");
-            SelfServiceMachine.SemiUi();
+            Console.WriteLine(FontStyle.Red("No Operations found."));
+            ServiceMachine.SemiUi();
             return;
         }
 
@@ -126,7 +116,7 @@ public class BankStatement
         SearchedStatements.Clear();
         for (int i = 0; i < Statements.Count; i++)
         {
-            if (Statements[i].NationalID == nationalId && Statements[i].Type.ToLower().Equals("transaction"))
+            if (Statements[i].NationalId == nationalId && Statements[i].Type.ToLower().Equals("transaction"))
             {
                 SearchedStatements.Add(Statements[i]);
             }
@@ -134,8 +124,8 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine("No Operations found.");
-            SelfServiceMachine.SemiUi();
+            Console.WriteLine(FontStyle.Red("No Operations found."));
+            ServiceMachine.SemiUi();
             return;
         }
 

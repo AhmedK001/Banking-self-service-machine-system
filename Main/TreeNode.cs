@@ -1,18 +1,14 @@
-using BankingSelfServiceMachine.Managers;
+namespace Main;
 
-namespace BankingSelfServiceMachine.Structures;
-
-using System;
-
-public class TreeNode : UserManager
+public class TreeNode
 {
-    public UserManager Data { get; set; }
-    public TreeNode Left { get; set; }
-    public TreeNode Right { get; set; }
-    public TreeNode LowestValueInTree { get; set; }
-    public TreeNode HighestValueInTree { get; set; }
+    public User Data { get; set; }
+    public TreeNode? Left { get; set; }
+    public TreeNode? Right { get; set; }
+    public TreeNode? LowestValueInTree { get; set; }
+    public TreeNode? HighestValueInTree { get; set; }
 
-    public TreeNode(UserManager data)
+    public TreeNode(User data)
     {
         Data = data;
         Left = null;

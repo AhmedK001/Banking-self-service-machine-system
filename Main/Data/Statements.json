@@ -1,86 +1,261 @@
 [
   {
-    "NationalID": 89027241,
+    "NationalId": 89027241,
     "Type": "Deposit",
     "Amount": 200,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-10T23:57:49.1457391+03:00"
   },
   {
-    "NationalID": 89027241,
+    "NationalId": 89027241,
     "Type": "Withdraw",
     "Amount": 50,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-10T23:57:59.2992961+03:00"
   },
   {
-    "NationalID": 89027241,
+    "NationalId": 89027241,
     "Type": "Transaction",
     "Amount": 50,
-    "ReciverID": 89127242,
+    "ReciverId": 89127242,
     "Date": "2024-04-10T23:58:24.3912404+03:00"
   },
   {
-    "NationalID": 37192846,
+    "NationalId": 37192846,
     "Type": "Deposit",
     "Amount": 9000,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-11T00:11:24.9999779+03:00"
   },
   {
-    "NationalID": 37192846,
+    "NationalId": 37192846,
     "Type": "Withdraw",
     "Amount": 200,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-11T00:11:37.2056292+03:00"
   },
   {
-    "NationalID": 37192846,
+    "NationalId": 37192846,
     "Type": "Withdraw",
     "Amount": 900,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-11T00:11:44.6876308+03:00"
   },
   {
-    "NationalID": 91428736,
+    "NationalId": 91428736,
     "Type": "Deposit",
     "Amount": 200,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-11T00:57:37.5078255+03:00"
   },
   {
-    "NationalID": 89027241,
+    "NationalId": 89027241,
     "Type": "Deposit",
     "Amount": 900,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-11T01:46:32.2894256+03:00"
   },
   {
-    "NationalID": 89027241,
+    "NationalId": 89027241,
     "Type": "Transaction",
     "Amount": 600,
-    "ReciverID": 89127246,
+    "ReciverId": 89127246,
     "Date": "2024-04-11T01:47:38.774131+03:00"
   },
   {
-    "NationalID": 89027241,
+    "NationalId": 89027241,
     "Type": "Deposit",
     "Amount": 900,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-11T01:52:05.0182315+03:00"
   },
   {
-    "NationalID": 89027241,
+    "NationalId": 89027241,
     "Type": "Deposit",
     "Amount": 100,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-11T01:52:12.475969+03:00"
   },
   {
-    "NationalID": 89027241,
+    "NationalId": 89027241,
     "Type": "Withdraw",
     "Amount": 1000,
-    "ReciverID": null,
+    "ReciverId": null,
     "Date": "2024-04-11T01:52:20.405229+03:00"
+  },
+  {
+    "NationalId": 89027249,
+    "Type": "Deposit",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-21T19:57:29.1977459+03:00"
+  },
+  {
+    "NationalId": 89027249,
+    "Type": "Deposit",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-21T19:58:25.3042356+03:00"
+  },
+  {
+    "NationalId": 89027249,
+    "Type": "Deposit",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-23T00:24:19.2697151+03:00"
+  },
+  {
+    "NationalId": 89027249,
+    "Type": "Deposit",
+    "Amount": 900,
+    "ReciverId": null,
+    "Date": "2024-04-23T00:28:45.2994644+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Deposit",
+    "Amount": 2000,
+    "ReciverId": null,
+    "Date": "2024-04-23T11:11:59.9478848+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Withdraw",
+    "Amount": 500,
+    "ReciverId": null,
+    "Date": "2024-04-23T15:41:58.020854+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Deposit",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-23T15:42:23.348233+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Deposit",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-23T15:48:07.2638978+03:00"
+  },
+  {
+    "NationalId": 99999999,
+    "Type": "Deposit",
+    "Amount": 900,
+    "ReciverId": null,
+    "Date": "2024-04-23T16:39:48.0975592+03:00"
+  },
+  {
+    "NationalId": 99999999,
+    "Type": "Withdraw",
+    "Amount": 900,
+    "ReciverId": null,
+    "Date": "2024-04-23T16:40:19.8466402+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Withdraw",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-23T18:34:43.6589677+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Transaction",
+    "Amount": 900,
+    "ReciverId": 99999999,
+    "Date": "2024-04-23T18:35:58.5923741+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Withdraw",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-23T18:51:59.889817+03:00"
+  },
+  {
+    "NationalId": 89027249,
+    "Type": "Withdraw",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-27T00:13:51.6942361+03:00"
+  },
+  {
+    "NationalId": 89027249,
+    "Type": "Withdraw",
+    "Amount": 100,
+    "ReciverId": null,
+    "Date": "2024-04-27T11:57:00.3387775+03:00"
+  },
+  {
+    "NationalId": 89027249,
+    "Type": "Withdraw",
+    "Amount": 100,
+    "ReciverId": null,
+    "Date": "2024-04-27T15:57:18.1600651+03:00"
+  },
+  {
+    "NationalId": 99999999,
+    "Type": "Transaction",
+    "Amount": 200,
+    "ReciverId": 42142142,
+    "Date": "2024-04-27T16:38:01.7838278+03:00"
+  },
+  {
+    "NationalId": 99999999,
+    "Type": "Transaction",
+    "Amount": 200,
+    "ReciverId": 42142142,
+    "Date": "2024-04-27T17:35:10.4940505+03:00"
+  },
+  {
+    "NationalId": 99999999,
+    "Type": "Transaction",
+    "Amount": 100,
+    "ReciverId": 42142142,
+    "Date": "2024-04-27T17:36:28.9483146+03:00"
+  },
+  {
+    "NationalId": 99999999,
+    "Type": "Transaction",
+    "Amount": 200,
+    "ReciverId": 42142142,
+    "Date": "2024-04-27T17:37:48.633086+03:00"
+  },
+  {
+    "NationalId": 99999999,
+    "Type": "Transaction",
+    "Amount": 50,
+    "ReciverId": 42142142,
+    "Date": "2024-04-27T17:38:14.103068+03:00"
+  },
+  {
+    "NationalId": 42142142,
+    "Type": "Transaction",
+    "Amount": 50,
+    "ReciverId": 99999999,
+    "Date": "2024-04-27T17:39:25.0195355+03:00"
+  },
+  {
+    "NationalId": 89027241,
+    "Type": "Deposit",
+    "Amount": 900,
+    "ReciverId": null,
+    "Date": "2024-04-27T20:42:29.4243152+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Deposit",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-04-27T20:47:50.0759699+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Deposit",
+    "Amount": 900,
+    "ReciverId": null,
+    "Date": "2024-04-27T20:50:23.0056421+03:00"
   }
 ]

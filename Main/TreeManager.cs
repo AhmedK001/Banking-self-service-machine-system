@@ -1,31 +1,27 @@
-using BankingSelfServiceMachine.Managers;
-using BankingSelfServiceMachine.UI;
-
-namespace BankingSelfServiceMachine.Structures;
-
 using System.Text.Json;
 
-public class UserBinaryTree
-{
-    public static TreeNode Root { get; set; }
-    public static List<UserManager> CustomerNodeDataList { get; } = new();
+namespace Main;
 
-    public static readonly string SolutionDirectory =
+public class TreeManager
+{
+    public static TreeNode? Root { get; set; }
+    public static List<User> CustomerNodeDataList { get; } = new();
+
+    public static readonly string ANSI_SOLUTION_DIRECTORY =
         Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
 
-    public static readonly string TreeDataFile = Path.Combine(SolutionDirectory, "Data", "TreeData.json");
+    public static readonly string ANSI_TREE_DATA_FILE = Path.Combine(ANSI_SOLUTION_DIRECTORY, "Data", "TreeData.json");
 
-    public static List<UserManager> SearchMethodArray { get; } = new();
-    public static List<UserManager> SearchMethodArrayForReceiver { get; } = new();
-    public static UserBinaryTree userBinaryTree { get; } = new();
+    public static List<User> SearchMethodArray { get; } = new();
+    public static List<User> SearchMethodArrayForReceiver { get; } = new();
 
     public static void LoadTreeData()
     {
         try
         {
-            var contens = File.ReadAllText(TreeDataFile);
+            var contens = File.ReadAllText(ANSI_TREE_DATA_FILE);
             //Console.WriteLine(contens);
-            var deserializedUsers = JsonSerializer.Deserialize<List<UserManager>>(contens);
+            var deserializedUsers = JsonSerializer.Deserialize<List<User>>(contens);
 
             for (var i = 0; i < deserializedUsers.Count; i++)
                 //Console.WriteLine(deserializedUsers[i]);
@@ -37,7 +33,7 @@ public class UserBinaryTree
         }
     }
 
-    public static void InsertOnTheTree(UserManager data)
+    public static void InsertOnTheTree(User data)
     {
         if (Root == null)
         {
@@ -50,9 +46,9 @@ public class UserBinaryTree
         }
     }
 
-    public static void InsertInOrder(UserManager data, TreeNode node)
+    public static void InsertInOrder(User data, TreeNode? node)
     {
-        var compareResult = data.NationalID.CompareTo(node.Data.NationalID);
+        var compareResult = data.NationalId.CompareTo(node.Data.NationalId);
         if (compareResult < 0)
         {
             if (node.Left == null)
@@ -86,7 +82,7 @@ public class UserBinaryTree
         try
         {
             var contents = JsonSerializer.Serialize(CustomerNodeDataList, options);
-            File.WriteAllText(TreeDataFile, contents);
+            File.WriteAllText(ANSI_TREE_DATA_FILE, contents);
         }
         catch (Exception e)
         {
@@ -100,7 +96,7 @@ public class UserBinaryTree
         {
             foreach (var data in CustomerNodeDataList)
             {
-                if (data.NationalID == SearchMethodArray[0].NationalID)
+                if (data.NationalId == SearchMethodArray[0].NationalId)
                 {
                     // Update the new balance
                     data.Balance = SearchMethodArray[0].Balance;
@@ -128,7 +124,7 @@ public class UserBinaryTree
         {
             foreach (var data in CustomerNodeDataList)
             {
-                if (data.NationalID == SearchMethodArrayForReceiver[0].NationalID)
+                if (data.NationalId == SearchMethodArrayForReceiver[0].NationalId)
                 {
                     // Update the new balance
                     data.Balance = SearchMethodArrayForReceiver[0].Balance;
@@ -147,7 +143,7 @@ public class UserBinaryTree
         StoreTreeData(); // Update the changes to the tree
     }
 
-    public static void SearchOnTree(int nationalID)
+    public static void SearchOnTree(int nationalId)
     {
         SearchMethodArray.Clear(); // Clear the array before performing search
         if (Root == null)
@@ -157,7 +153,7 @@ public class UserBinaryTree
         var node = Root;
         while (node != null)
         {
-            var compareResult = nationalID.CompareTo(node.Data.NationalID);
+            var compareResult = nationalId.CompareTo(node.Data.NationalId);
             if (compareResult == 0)
             {
                 SearchMethodArray.Clear();
@@ -170,7 +166,7 @@ public class UserBinaryTree
             if (compareResult < 0)
                 node = node.Left;
             if (compareResult > 0)
-                node = node.Right;
+                node = node?.Right;
         }
 
         SearchMethodArray.Clear();
@@ -178,7 +174,7 @@ public class UserBinaryTree
     }
 
 
-    public static void SearchOnTreeForReceiver(int nationalID)
+    public static void SearchOnTreeForReceiver(int nationalId)
     {
         SearchMethodArrayForReceiver.Clear(); // Clear the array before performing search
         if (Root == null)
@@ -190,14 +186,14 @@ public class UserBinaryTree
         var node = Root;
         while (node != null)
         {
-            var compareResult = nationalID.CompareTo(node.Data.NationalID);
+            var compareResult = nationalId.CompareTo(node.Data.NationalId);
             if (compareResult == 0)
             {
                 SearchMethodArrayForReceiver.Clear();
                 SearchMethodArrayForReceiver.Add(node.Data);
                 // Console.WriteLine("Found: " + node.Data);
                 // When find receiver account, continue
-                SelfServiceMachine.CheckExistsForReceiverAccount();
+                //ServiceMachine.CheckExistsForReceiverAccount();
                 return;
             }
 
@@ -205,12 +201,12 @@ public class UserBinaryTree
             if (compareResult < 0)
                 node = node.Left;
             if (compareResult > 0)
-                node = node.Right;
+                node = node?.Right;
         }
 
         SearchMethodArrayForReceiver.Clear();
-        Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "\n\nNot found." + FontStyle.ANSI_RESET);
-        SelfServiceMachine.SemiUi();
+        Console.WriteLine(FontStyle.Red("\n\nNot found."));
+        ServiceMachine.SemiUi();
     }
 
     // Method to display the binary tree if needed
@@ -222,24 +218,24 @@ public class UserBinaryTree
             return;
         }
 
-        var queue = new Queue<TreeNode>();
+        var queue = new Queue<TreeNode?>();
         queue.Enqueue(Root);
 
         while (queue.Count > 0)
         {
             var node = queue.Dequeue();
-            Console.WriteLine("=================");
-            Console.WriteLine("Node National ID: " + node.Data.NationalID);
+            Console.WriteLine(FontStyle.SpaceLine());
+            Console.WriteLine("Node National ID: " + node.Data.NationalId);
             Console.WriteLine("        Password: " + node.Data.Password);
             Console.WriteLine("         Balance: " + node.Data.Balance);
             Console.WriteLine("      First Name: " + node.Data.FirstName);
             Console.WriteLine("       Last Name: " + node.Data.LastName);
-            Console.WriteLine("            Root: " + node.Data.NationalID);
+            Console.WriteLine("            Root: " + node.Data.NationalId);
 
             Console.Write("       Left Node: ");
             if (node.Left != null)
             {
-                Console.WriteLine(node.Left.Data.NationalID);
+                Console.WriteLine(node.Left.Data.NationalId);
                 queue.Enqueue(node.Left);
             }
             else
@@ -250,7 +246,7 @@ public class UserBinaryTree
             Console.Write("      Right Node: ");
             if (node.Right != null)
             {
-                Console.WriteLine(node.Right.Data.NationalID);
+                Console.WriteLine(node.Right.Data.NationalId);
                 queue.Enqueue(node.Right);
             }
             else
@@ -260,59 +256,5 @@ public class UserBinaryTree
 
             Console.WriteLine();
         }
-    }
-
-    public void DisplayLowestValueInTree()
-    {
-        var node = Root;
-        if (Root == null)
-        {
-            Console.WriteLine("UserAvlTree is empty.");
-            return;
-        }
-
-        while (node.Left != null)
-        {
-            node = node.Left;
-            node.LowestValueInTree = node;
-            /*
-            in some systems if the primary key for the node arranged in a sequential pattern
-            We could use that method in order to reduce the time complexity
-            it could be less than O(log(n)) in the some cases
-
-            However, we could reverse rotating pattern in order to reach whatever value we want
-            if we noticed that it is near of the highest value in the tree or lowest value in the tree
-            instead of starting from the root.
-             */
-        }
-
-        Console.WriteLine("lowest ID value in the binary tree: " + node.LowestValueInTree.Data.NationalID);
-    }
-
-    public void DisplayHighestValueInTree()
-    {
-        if (Root == null)
-        {
-            Console.WriteLine("UserAvlTree is empty.");
-            return;
-        }
-
-        var node = Root;
-        while (node.Right != null)
-        {
-            node = node.Right;
-            node.HighestValueInTree = node;
-            /*
-            in some systems if the primary key for the node arranged in a sequential pattern
-            We could use that method in order to reduce the time complexity
-            it could be less than O(log(n)) in some cases
-
-            However, we could reverse rotating pattern in order to reach whatever value we want
-            if we noticed that it is near of the highest value in the tree or lowest value in the tree
-            instead of starting from the root.
-             */
-        }
-
-        Console.WriteLine("highest ID value in the binary tree: " + node.HighestValueInTree.Data.NationalID);
     }
 }

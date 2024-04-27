@@ -1,17 +1,15 @@
 using System.Text.Json;
-using BankingSelfServiceMachine.Operations;
-using BankingSelfServiceMachine.Structures;
 
-namespace BankingSelfServiceMachine.Data;
+namespace Main;
 
-public class DataManager
+public class DataHandler
 {
     public readonly string StatementsDataFile = Path.Combine(SolutionDirectory, "Data", "Statements.json");
     private static bool StoredFromFileAccountsData { get; set; }
     private BankStatement _bankStatement;
 
 
-    public DataManager(BankStatement bankStatement)
+    public DataHandler(BankStatement bankStatement)
     {
         _bankStatement = bankStatement;
     }
@@ -34,7 +32,7 @@ public class DataManager
         HandleDataFile(StatementsDataFile); // make sure of the data file
 
         var loadedStatementsData = File.ReadAllText(StatementsDataFile);
-        List<StatementOperation> deserializedStatementsData =
+        List<StatementOperation>? deserializedStatementsData =
             JsonSerializer.Deserialize<List<StatementOperation>>(loadedStatementsData);
         _bankStatement.Statements = deserializedStatementsData;
     }
@@ -44,11 +42,11 @@ public class DataManager
         if (!StoredFromFileAccountsData)
         {
             StoredFromFileAccountsData = true;
-            DataManager.HandleDataFile(UserBinaryTree.TreeDataFile); // make sure of the data file
+            DataHandler.HandleDataFile(TreeManager.ANSI_TREE_DATA_FILE); // make sure of the data file
 
-            UserBinaryTree.LoadTreeData();
+            TreeManager.LoadTreeData();
             //Console.WriteLine("-----");
-            UserBinaryTree.DisplayTree();
+            TreeManager.DisplayTree();
         }
     }
 
@@ -67,9 +65,8 @@ public class DataManager
                     fileCreated = true;
                 }
             }
-            catch (IOException e)
+            catch (IOException)
             {
-                Console.WriteLine(e.StackTrace);
             }
 
             if (!fileCreated) throw new IOException("Failed to create a new file: " + filePath);

@@ -1,52 +1,67 @@
-using BankingSelfServiceMachine.Data;
-using BankingSelfServiceMachine.Managers;
-using BankingSelfServiceMachine.Structures;
-using BankingSelfServiceMachine.UI;
+namespace Main;
 
-namespace BankingSelfServiceMachine.Security;
-
-public class UserAuth : UserManager
+public class UserAuth : User
 {
+    public static int UserAccountId { get; set; }
+    //public static int InputtedIdToTrans { get; set; }
+    public static int NationalIdForChangingPassword { get; set; }
+    public static string? NewPasswordFirstTime { get; set; }
+    public static string? NewPasswordSecondTime { get; set; }
+
+    private static string? InputtedPasswordForLoggingIn { get; set; }
+    private static int InputtedNationalIdToRegister { get; set; }
+    private static string? InputtedPasswordToRegister { get; set; }
+    private static string? InputtedFirstNameToRegister { get; set; }
+    private static string? InputtedSecondNameToRegister { get; set; }
+
+    public static int LimitLogin { get; set; }
+    public static int LimitLoginProcess { get; set; }
+    public static int LimitPassword { get; set; }
+    public static int LimitRegisterNationId { get; set; }
+    public static int LimitRegisterFirstName { get; set; }
+    public static int LimitRegisterSecondName { get; set; }
+
+
     public static void Login()
     {
-        LimitLogin = AttemptsManager.IncreaseAttempts(LimitLogin);
-        if (AttemptsManager.IsExceededAttempts(LimitLogin, 5))
+        LimitLogin = AttemptsHandler.IncreaseAttempts(LimitLogin);
+        if (AttemptsHandler.IsExceededAttempts(LimitLogin, 5))
         {
-            AttemptsManager.HandleExceededAttempts();
+            AttemptsHandler.HandleExceededAttempts();
             return;
         }
 
         try
         {
-            DataManager.LoadAccountsData();
+            DataHandler.LoadAccountsData();
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Console.WriteLine(e.StackTrace);
+            // ignored
         }
 
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "Here you can Login." + FontStyle.ANSI_RESET);
-        GetIDInputForLoggingIn(); // continue
+        Console.WriteLine(FontStyle.White("\n====* Here you can Login. *===="));
+        GetIdInputForLoggingIn(); // continue
     }
 
-    private static void GetIDInputForLoggingIn()
+    private static void GetIdInputForLoggingIn()
     {
-        LimitLoginProcess = AttemptsManager.IncreaseAttempts(LimitLoginProcess);
-        if (AttemptsManager.IsExceededAttempts(LimitLoginProcess, 5))
+        LimitLoginProcess = AttemptsHandler.IncreaseAttempts(LimitLoginProcess);
+        if (AttemptsHandler.IsExceededAttempts(LimitLoginProcess, 5))
         {
-            AttemptsManager.HandleExceededAttempts();
+            AttemptsHandler.HandleExceededAttempts();
             return;
         }
 
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "Enter your National ID..\n\n" +
-                          FontStyle.ANSI_RESET);
+
+        Console.Write(FontStyle.Green("Enter your National ID: "));
         try
         {
-            InputNationIdForLogin = Convert.ToInt32(Console.ReadLine());
+            UserAccountId = Convert.ToInt32(Console.ReadLine());
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            GetIDInputForLoggingIn();
+            GetIdInputForLoggingIn();
             return;
         }
 
@@ -55,51 +70,51 @@ public class UserAuth : UserManager
 
     private static void GetPasswordInputForLoggingIn()
     {
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "Enter your Password..\n\n" +
-                          FontStyle.ANSI_RESET);
+        Console.Write(FontStyle.Green("Enter your Password: "));
         try
         {
             InputtedPasswordForLoggingIn = Console.ReadLine();
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Console.WriteLine(e.StackTrace);
             Console.WriteLine("Invalid input!!");
             GetPasswordInputForLoggingIn();
             return;
         }
 
         // then
-        CheckAccountValidity(InputNationIdForLogin, InputtedPasswordForLoggingIn);
+        CheckAccountValidity(UserAccountId, InputtedPasswordForLoggingIn);
     }
 
-    private static void CheckAccountValidity(int inputNationIdForLogin, string inputPasswordForLogin)
+    private static void CheckAccountValidity(int inputNationIdForLogin, string? inputPasswordForLogin)
     {
-        UserBinaryTree.SearchOnTree(inputNationIdForLogin);
+        TreeManager.SearchOnTree(inputNationIdForLogin);
         // if national id does not exist
-        if (UserBinaryTree.SearchMethodArray.Count == 0)
+        if (TreeManager.SearchMethodArray.Count == 0)
         {
-            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "National ID or password is incorrect!\n\n" +
-                              FontStyle.ANSI_RESET);
-            AttemptsManager.IncreaseAttempts(LimitLoginProcess); // Chances --;
-            GetIDInputForLoggingIn();
+            Console.WriteLine(FontStyle.Red("National ID or password is incorrect!\n\n"));
+            AttemptsHandler.IncreaseAttempts(LimitLoginProcess); // Chances --;
+            GetIdInputForLoggingIn();
             return;
         }
 
         // if national id and password doesn't match
-        if (UserBinaryTree.SearchMethodArray[0].NationalID != inputNationIdForLogin ||
-            !UserBinaryTree.SearchMethodArray[0].Password.Equals(inputPasswordForLogin))
+        var password = TreeManager.SearchMethodArray[0].Password;
+        if (password != null && (TreeManager.SearchMethodArray[0].NationalId != inputNationIdForLogin ||
+                                 !password.Equals(inputPasswordForLogin)))
         {
-            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "National ID or password is incorrect!\n\n" +
-                              FontStyle.ANSI_RESET);
-            AttemptsManager.IncreaseAttempts(LimitLoginProcess); // Chances --;
-            GetIDInputForLoggingIn();
+            Console.WriteLine(FontStyle.Red("National ID or password is incorrect!\n\n"));
+            AttemptsHandler.IncreaseAttempts(LimitLoginProcess); // Chances --;
+            GetIdInputForLoggingIn();
             return;
         }
-
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "\n\nSuccessfully logged in!" +
-                          FontStyle.ANSI_RESET);
-        SelfServiceMachine.MainUi(); // if passed continue
+        
+        //Console.WriteLine(FontStyle.White("====* *====================="));
+        Console.Clear();
+        Console.Write(FontStyle.Red("\n==> "));
+        Console.Write(FontStyle.Green("Successfully logged in!"));
+        Console.WriteLine(FontStyle.Red(" <=="));
+        ServiceMachine.MainUi(); // if passed continue
     } // --- END OF LOGGING IN PROCESS ---
 
 
@@ -108,45 +123,42 @@ public class UserAuth : UserManager
     {
         try
         {
-            DataManager.LoadAccountsData();
+            DataHandler.LoadAccountsData();
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Console.WriteLine("Exception in loading the data: " + e.Message);
+            Console.WriteLine("Exception in loading the data: ");
         }
 
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD +
-                          "Here you can quickly REGISTER in our system." + FontStyle.ANSI_RESET);
+        Console.WriteLine(FontStyle.White("====* Registration *===="));
 
         RegisterFirstName(); // Start
     }
 
     private static void RegisterFirstName()
     {
-        LimitRegisterFirstName = AttemptsManager.IncreaseAttempts(LimitRegisterFirstName);
-        if (AttemptsManager.IsExceededAttempts(LimitRegisterFirstName, 5))
+        LimitRegisterFirstName = AttemptsHandler.IncreaseAttempts(LimitRegisterFirstName);
+        if (AttemptsHandler.IsExceededAttempts(LimitRegisterFirstName, 5))
         {
-            AttemptsManager.HandleExceededAttempts();
+            AttemptsHandler.HandleExceededAttempts();
             return;
         }
 
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "Enter your first name..\n\n" +
-                          FontStyle.ANSI_RESET);
+        Console.Write(FontStyle.Green("Enter your first name: "));
         try
         {
             InputtedFirstNameToRegister = Console.ReadLine();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("Invalid input!!");
-            Console.WriteLine(e.StackTrace);
             RegisterFirstName();
             return;
         }
 
         if (!InputsFilter.IsItName(InputtedFirstNameToRegister))
         {
-            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "Invalid input!!" + FontStyle.ANSI_RESET);
+            Console.WriteLine(FontStyle.Red("Invalid input!!"));
             RegisterFirstName();
             return;
         }
@@ -156,63 +168,59 @@ public class UserAuth : UserManager
 
     private static void RegisterSecondName()
     {
-        LimitRegisterSecondName = AttemptsManager.IncreaseAttempts(LimitRegisterSecondName);
-        if (AttemptsManager.IsExceededAttempts(LimitRegisterSecondName, 5))
+        LimitRegisterSecondName = AttemptsHandler.IncreaseAttempts(LimitRegisterSecondName);
+        if (AttemptsHandler.IsExceededAttempts(LimitRegisterSecondName, 5))
         {
-            AttemptsManager.HandleExceededAttempts();
+            AttemptsHandler.HandleExceededAttempts();
             return;
         }
 
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "Enter you second name..\n\n" +
-                          FontStyle.ANSI_RESET);
+        Console.Write(FontStyle.Green("Enter you second name: "));
         try
         {
             InputtedSecondNameToRegister = Console.ReadLine();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("Invalid input!!");
-            Console.WriteLine(e.StackTrace);
             RegisterFirstName();
             return;
         }
 
         if (!InputsFilter.IsItName(InputtedSecondNameToRegister))
         {
-            Console.WriteLine(FontStyle.ANSI_RED + FontStyle.BOLD + "Invalid input!!" + FontStyle.ANSI_RESET);
+            Console.WriteLine(FontStyle.Red("Invalid input!!"));
             RegisterSecondName();
             return;
         }
 
-        RegisterNationID(); // if passed continue
+        RegisterNationId(); // if passed continue
     }
 
-    private static void RegisterNationID()
+    private static void RegisterNationId()
     {
-        LimitRegisterNationID = AttemptsManager.IncreaseAttempts(LimitRegisterNationID);
-        if (AttemptsManager.IsExceededAttempts(LimitRegisterNationID, 3))
+        LimitRegisterNationId = AttemptsHandler.IncreaseAttempts(LimitRegisterNationId);
+        if (AttemptsHandler.IsExceededAttempts(LimitRegisterNationId, 3))
         {
-            AttemptsManager.HandleExceededAttempts();
+            AttemptsHandler.HandleExceededAttempts();
             return;
         }
 
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD +
-                          "Enter your National ID (exactly 8 digits)..\n\n" + FontStyle.ANSI_RESET);
+        Console.Write(FontStyle.Green("Enter your National ID (exactly 8 digits): "));
         try
         {
             InputtedNationalIdToRegister = Convert.ToInt32(Console.ReadLine());
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("Invalid input!!");
-            Console.WriteLine(e.StackTrace);
-            RegisterNationID();
+            RegisterNationId();
             return;
         }
 
         if (!InputsFilter.IsItNationalId(InputtedNationalIdToRegister))
         {
-            RegisterNationID();
+            RegisterNationId();
             return;
         }
 
@@ -221,38 +229,36 @@ public class UserAuth : UserManager
 
     private static void CheckIfNationIdUnique()
     {
-        UserBinaryTree.SearchOnTree(InputtedNationalIdToRegister);
-        if (UserBinaryTree.SearchMethodArray.Count == 0)
+        TreeManager.SearchOnTree(InputtedNationalIdToRegister);
+        if (TreeManager.SearchMethodArray.Count == 0)
         {
             RegisterPassword(); // continue
             return;
         }
 
-        if (InputtedNationalIdToRegister == UserBinaryTree.SearchMethodArray[0].NationalID)
+        if (InputtedNationalIdToRegister == TreeManager.SearchMethodArray[0].NationalId)
         {
-            Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "You have an account already! \n" +
-                              FontStyle.ANSI_RESET);
-            GetInputForLoginOrRegister();
+            Console.WriteLine(FontStyle.Green("You have an account already! \n"));
+            ServiceMachine.GetInputForLoginOrRegister();
         }
     }
 
     private static void RegisterPassword()
     {
-        if (AttemptsManager.IsExceededAttempts(LimitPassword, 5))
+        if (AttemptsHandler.IsExceededAttempts(LimitPassword, 5))
         {
-            AttemptsManager.HandleExceededAttempts();
+            AttemptsHandler.HandleExceededAttempts();
             return;
         }
 
-        LimitPassword = AttemptsManager.IncreaseAttempts(LimitPassword);
+        LimitPassword = AttemptsHandler.IncreaseAttempts(LimitPassword);
 
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD +
-                          "Enter Your Password..(Equal to or more than 8 chars.)\n\n" + FontStyle.ANSI_RESET);
+        Console.Write(FontStyle.Green("Enter Your Password..(Equal to or more than 8 chars.): "));
         try
         {
             InputtedPasswordToRegister = Console.ReadLine();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             RegisterPassword();
             return;
@@ -271,17 +277,28 @@ public class UserAuth : UserManager
     private static void CompleteRegistration()
     {
         //if unique ID continue register password
-        var newUser = new UserManager(InputtedFirstNameToRegister, InputtedSecondNameToRegister,
-            InputtedNationalIdToRegister, InputtedPasswordToRegister);
+        var newUser = new User(InputtedFirstNameToRegister, InputtedSecondNameToRegister, InputtedNationalIdToRegister,
+            InputtedPasswordToRegister);
 
-        UserBinaryTree.InsertOnTheTree(newUser);
-        UserBinaryTree.StoreTreeData();
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "=========================" +
-                          FontStyle.ANSI_RESET);
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_GREEN + FontStyle.BOLD + "Registered Successfully!!" +
-                          FontStyle.ANSI_RESET);
-        Console.WriteLine(FontStyle.ANSI_BRIGHT_WHITE + FontStyle.BOLD + "=========================\n\n" +
-                          FontStyle.ANSI_RESET);
+        TreeManager.InsertOnTheTree(newUser);
+        TreeManager.StoreTreeData();
+        Console.WriteLine(FontStyle.SpaceLine());
+        Console.WriteLine(FontStyle.Green("=* Registered Successfully!! *="));
+        Console.WriteLine(FontStyle.SpaceLine() + "\n\n");
+
         Login();
+    }
+
+    public static void ResetOldData()
+    {
+        UserAccountId = -1;
+        NationalIdForChangingPassword = -1;
+        InputtedNationalIdToRegister = -1;
+        NewPasswordFirstTime = null;
+        NewPasswordSecondTime = null;
+        InputtedPasswordForLoggingIn = null;
+        InputtedPasswordToRegister = null;
+        InputtedFirstNameToRegister = null;
+        InputtedSecondNameToRegister = null;
     }
 }
