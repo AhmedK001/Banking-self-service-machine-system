@@ -2,25 +2,20 @@ namespace Main;
 
 public class AccountManager : User
 {
-    public static int LimitNewPasswordForChangingIt { get; set; }
-    public static int LimitInputForLoginOrRegister { get; set; }
-    public static int LimitIdForChangingPassword { get; set; }
-    public static int LimitOldPasswordToChangingPassword { get; set; }
-    
+    public static int LimitNewPassword { get; set; } = 5;
+    public static int LimitInputForLoginOrRegister { get; set; } = 5;
+    public static int LimitIdForChangingPassword { get; set; } = 5;
+    public static int LimitOldPassword { get; set; } = 5;
+
     public static void ChangePassword()
     {
         Console.WriteLine(FontStyle.White("=* Here you can change your password *="));
-        InputIdForChangingPassword();
+        GetIdForChangingPassword();
     }
 
-    private static void InputIdForChangingPassword()
+    private static void GetIdForChangingPassword()
     {
-        LimitIdForChangingPassword = AttemptsHandler.IncreaseAttempts(LimitIdForChangingPassword);
-        if (AttemptsHandler.IsExceededAttempts(LimitIdForChangingPassword, 3))
-        {
-            AttemptsHandler.HandleExceededAttempts();
-            return;
-        }
+        if (!AttemptsHandler.LetGetIdForChangingPassword()) return;
 
         Console.Write(FontStyle.Green("Enter your Account national ID: "));
         try
@@ -29,30 +24,25 @@ public class AccountManager : User
         }
         catch (Exception)
         {
-            Console.WriteLine("Invalid input!!");
-            InputIdForChangingPassword();
+            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitIdForChangingPassword)));
+            GetIdForChangingPassword();
             return;
         }
 
         if (UserAuth.NationalIdForChangingPassword == TreeManager.SearchMethodArray.First().NationalId)
         {
-            InputOldPasswordForChangingPassword(); // continue
+            InputOldPassword(); // continue
         }
         else
         {
             Console.WriteLine(FontStyle.Red("National IDs do not match!"));
-            InputIdForChangingPassword();
+            GetIdForChangingPassword();
         }
     }
 
-    private static void InputOldPasswordForChangingPassword()
+    private static void InputOldPassword()
     {
-        LimitOldPasswordToChangingPassword = AttemptsHandler.IncreaseAttempts(LimitOldPasswordToChangingPassword);
-        if (AttemptsHandler.IsExceededAttempts(LimitOldPasswordToChangingPassword, 3))
-        {
-            AttemptsHandler.HandleExceededAttempts();
-            return;
-        }
+        if (!AttemptsHandler.LetInputOldPassword()) return;
 
         Console.Write(FontStyle.Green("Enter your old password: "));
         string? oldPassword;
@@ -62,28 +52,23 @@ public class AccountManager : User
         }
         catch (Exception)
         {
-            InputOldPasswordForChangingPassword();
+            InputOldPassword();
             return;
         }
 
         if (oldPassword != null && oldPassword.Equals(TreeManager.SearchMethodArray.First().Password))
         {
-            InputNewPasswordForChangingIt(); // continue
+            InputNewPassword(); // continue
         }
         else
         {
-            InputOldPasswordForChangingPassword();
+            InputOldPassword();
         }
     }
 
-    private static void InputNewPasswordForChangingIt()
+    private static void InputNewPassword()
     {
-        LimitNewPasswordForChangingIt = AttemptsHandler.IncreaseAttempts(LimitNewPasswordForChangingIt);
-        if (AttemptsHandler.IsExceededAttempts(LimitNewPasswordForChangingIt, 3))
-        {
-            AttemptsHandler.HandleExceededAttempts();
-            return;
-        }
+        if (!AttemptsHandler.LetInputNewPassword()) return;
 
         Console.Write(FontStyle.Green("Enter your new password: "));
         try
@@ -92,14 +77,14 @@ public class AccountManager : User
         }
         catch (Exception)
         {
-            InputNewPasswordForChangingIt();
+            InputNewPassword();
             return;
         }
 
         if (UserAuth.NewPasswordFirstTime != null && UserAuth.NewPasswordFirstTime.Length < 8)
         {
             Console.WriteLine(FontStyle.Red("Passwords must consist of more than 7 characters."));
-            InputNewPasswordForChangingIt(); // Repeat
+            InputNewPassword(); // Repeat
         }
         else
         {
@@ -111,7 +96,7 @@ public class AccountManager : User
             else
             {
                 Console.WriteLine(FontStyle.Red("Cannot use the same old password."));
-                InputNewPasswordForChangingIt();
+                InputNewPassword();
             }
         }
     }
@@ -130,7 +115,8 @@ public class AccountManager : User
             return;
         }
 
-        if (UserAuth.NewPasswordFirstTime != null && UserAuth.NewPasswordFirstTime.Equals(UserAuth.NewPasswordSecondTime))
+        if (UserAuth.NewPasswordFirstTime != null &&
+            UserAuth.NewPasswordFirstTime.Equals(UserAuth.NewPasswordSecondTime))
         {
             ChangeOldPasswordFinalStep(); // Continue
         }
@@ -138,7 +124,7 @@ public class AccountManager : User
         {
             // Repeat the process
             Console.WriteLine(FontStyle.Red("Does not match!"));
-            InputNewPasswordForChangingIt();
+            InputNewPassword();
         }
     }
 

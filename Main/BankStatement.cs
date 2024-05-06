@@ -48,7 +48,7 @@ public class BankStatement
         ServiceMachine.SemiUi();
     }
 
-    public void FilterStatementsById(int nationalId)
+    public void FilterById(int nationalId)
     {
         SearchedStatements.Clear();
         for (int i = 0; i < Statements.Count; i++)
@@ -66,10 +66,11 @@ public class BankStatement
             return;
         }
 
+        Console.WriteLine(FontStyle.White(FilterByIdMessage()));
         DisplayStatements(SearchedStatements);
     }
 
-    public void FilterStatementsByWithdraw(int nationalId)
+    public void FilterByWithdraw(int nationalId)
     {
         SearchedStatements.Clear();
         for (int i = 0; i < Statements.Count; i++)
@@ -87,10 +88,11 @@ public class BankStatement
             return;
         }
 
+        Console.WriteLine(FontStyle.White(FilterByWithdrawMessage()));
         DisplayStatements(SearchedStatements);
     }
 
-    public void FilterStatementsByDeposit(int nationalId)
+    public void FilterByDeposit(int nationalId)
     {
         SearchedStatements.Clear();
         for (int i = 0; i < Statements.Count; i++)
@@ -108,10 +110,11 @@ public class BankStatement
             return;
         }
 
+        Console.WriteLine(FontStyle.White(FilterByDepositMessage()));
         DisplayStatements(SearchedStatements);
     }
 
-    public void FilterStatementsByTransaction(int nationalId)
+    public void FilterByTransaction(int nationalId)
     {
         SearchedStatements.Clear();
         for (int i = 0; i < Statements.Count; i++)
@@ -129,10 +132,31 @@ public class BankStatement
             return;
         }
 
+        Console.WriteLine(FontStyle.White(FilterByTransactionMessage()));
         DisplayStatements(SearchedStatements);
     }
 
     public void FilterStatementsByDate(int nationalId, DateTime time)
     {
+    }
+
+    public static string FilterByDepositMessage()
+    {
+        return "*==| Deposits Operations |==*";
+    }
+
+    public static string FilterByWithdrawMessage()
+    {
+        return "*==| Withdrawals Operations |==*";
+    }
+
+    public static string FilterByTransactionMessage()
+    {
+        return "*==| Transactions Operations |==*";
+    }
+
+    public static string FilterByIdMessage()
+    {
+        return "*==| All Your Account Operations |==*";
     }
 }

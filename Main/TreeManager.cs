@@ -12,7 +12,7 @@ public class TreeManager
 
     public static readonly string ANSI_TREE_DATA_FILE = Path.Combine(ANSI_SOLUTION_DIRECTORY, "Data", "TreeData.json");
 
-    public static List<User> SearchMethodArray { get; } = new();
+    public static List<User>? SearchMethodArray { get; } = new();
     public static List<User> SearchMethodArrayForReceiver { get; } = new();
 
     public static void LoadTreeData()
@@ -20,11 +20,9 @@ public class TreeManager
         try
         {
             var contens = File.ReadAllText(ANSI_TREE_DATA_FILE);
-            //Console.WriteLine(contens);
             var deserializedUsers = JsonSerializer.Deserialize<List<User>>(contens);
 
             for (var i = 0; i < deserializedUsers.Count; i++)
-                //Console.WriteLine(deserializedUsers[i]);
                 InsertOnTheTree(deserializedUsers[i]); // insert the data to tree
         }
         catch (Exception e)
@@ -35,7 +33,7 @@ public class TreeManager
 
     public static void InsertOnTheTree(User data)
     {
-        if (Root == null)
+        if (IsTreeEmpty())
         {
             Root = new TreeNode(data);
             CustomerNodeDataList.Add(Root.Data);
@@ -146,9 +144,8 @@ public class TreeManager
     public static void SearchOnTree(int nationalId)
     {
         SearchMethodArray.Clear(); // Clear the array before performing search
-        if (Root == null)
-            // Console.WriteLine("UserAvlTree is empty.");
-            return;
+        if (IsTreeEmpty()) return;
+
 
         var node = Root;
         while (node != null)
@@ -171,6 +168,40 @@ public class TreeManager
 
         SearchMethodArray.Clear();
         // Console.WriteLine("Not found.");
+    }
+
+    public static bool IsUsedId(int nationalId)
+    {
+        if (IsTreeEmpty()) return false;
+
+        var node = Root;
+        while (node != null)
+        {
+            var result = CompareIds(node,nationalId);
+            if (result == 0)
+            {
+                return true;
+            }
+
+            if (result < 0)
+                node = node.Left;
+            if (result > 0)
+                node = node?.Right;
+        }
+
+        return false;
+    }
+
+    private static bool IsTreeEmpty()
+    {
+        if (Root != null) return false;
+
+        return true;
+    }
+
+    private static int CompareIds(TreeNode node, int id)
+    {
+        return id.CompareTo(node.Data.NationalId);
     }
 
 
@@ -212,7 +243,7 @@ public class TreeManager
     // Method to display the binary tree if needed
     public static void DisplayTree()
     {
-        if (Root == null)
+        if (IsTreeEmpty())
         {
             Console.WriteLine("UserAvlTree is empty.");
             return;

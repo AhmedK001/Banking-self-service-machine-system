@@ -21,6 +21,12 @@ public class User
     {
     }
     
+    public User(int nationalId, string password)
+    {
+        this.NationalId = nationalId;
+        this.Password = password;
+    }
+    
     public override string ToString()
     {
         return "\n FirstName: " + FirstName + "\n  LastName: " + LastName + "\nNationalID: " + NationalId +
