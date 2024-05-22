@@ -4,7 +4,7 @@ namespace Main;
 
 public class DataHandler
 {
-    public readonly string StatementsDataFile = Path.Combine(SolutionDirectory, "Data", "Statements.json");
+    public readonly string StatementsDataFile = Path.Combine(ANSI_SOLUTION_DIRECTORY, "Data", "Statements.json");
     private static bool StoredFromFileAccountsData { get; set; }
     private BankStatement _bankStatement;
 
@@ -14,7 +14,7 @@ public class DataHandler
         _bankStatement = bankStatement;
     }
 
-    public static readonly string SolutionDirectory =
+    public static readonly string ANSI_SOLUTION_DIRECTORY =
         Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
 
 
@@ -42,7 +42,7 @@ public class DataHandler
         if (!StoredFromFileAccountsData)
         {
             StoredFromFileAccountsData = true;
-            DataHandler.HandleDataFile(TreeManager.ANSI_TREE_DATA_FILE); // make sure of the data file
+            HandleDataFile(TreeManager.ANSI_TREE_DATA_FILE); // make sure of the data file
 
             TreeManager.LoadTreeData();
             //Console.WriteLine("-----");

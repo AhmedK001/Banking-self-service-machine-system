@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Main;
 
-public class InputsFilter
+public class Validator
 {
     public static bool IsItName(string? name)
     {
@@ -15,7 +15,7 @@ public class InputsFilter
         return regexNameFilter.IsMatch(name);
     }
 
-    public static bool IsItNationalId(int? id)
+    public static bool IsNationalId(int? id)
     {
         if (id is null) return false;
         
@@ -25,8 +25,28 @@ public class InputsFilter
 
         return regexNationalIdFilter.IsMatch(id.ToString());
     }
+    
+    public static bool IsIdForCurrentAccount(int? id)
+    {
+        if (!AttemptsHandler.LetIsIdForCurrentAccount()) return false;
 
-    public static bool IsItPassword(string? password)
+        if (id is null) return false;
+
+        if (TreeManager.SearchMethodArray == null) return false;
+
+        return id == TreeManager.SearchMethodArray.First().NationalId;
+    }
+    
+    public static bool IsCurrentPassword(string? oldPassword)
+    {
+        if (!AttemptsHandler.LetInputOldPassword()) return false;
+
+        if (oldPassword is null || TreeManager.SearchMethodArray is null) return false;
+
+        return oldPassword.Equals(TreeManager.SearchMethodArray.First().Password);
+    }
+
+    public static bool IsPassword(string? password)
     {
         if (password is null) return false;
         
@@ -35,6 +55,13 @@ public class InputsFilter
         Regex regexPasswordFilter = new Regex(pattern);
 
         return regexPasswordFilter.IsMatch(password);
+    }
+    
+    public static bool AreStringsMatches(string? str1, string? str2)
+    {
+        if (str1 is null || str2 is null) return false;
+
+        return Equals(str2, str1);
     }
 
     public static bool IsMultipleOf50Or100(double amount)
@@ -75,55 +102,5 @@ public class InputsFilter
         }
 
         return false;
-    }
-
-    public static string LessThan50()
-    {
-        return "Amount should be equal to or bigger than 50$!";
-    }
-
-    public static string NotMultipleOf50Or100()
-    {
-        return "Please enter a value multiple of 50 or 100.";
-    }
-
-    public static string BiggerThan10000()
-    {
-        return "Amount should be less than 10000$";
-    }
-
-    public static string BiggerThan5000()
-    {
-        return "Amount should be equal to or less than 5000$!";
-    }
-
-    public static string InvalidOption(int chances)
-    {
-        if (chances - 1 > 1)
-        {
-            return $"Invalid option. {chances - 1} Chances Left.";
-        }
-
-        return $"Invalid option. {chances - 1} Chance Left.";
-    }
-
-    public static string InvalidInput(int chances)
-    {
-        if (chances - 1 > 1)
-        {
-            return $"Invalid Input. {chances - 1} Chances Left.";
-        }
-
-        return $"Invalid Input. {chances - 1} Chance Left.";
-    }
-
-    public static string IncorrectInput(int chances)
-    {
-        if (chances - 1 > 1)
-        {
-            return $"National ID or Password is incorrect! {chances - 1} Chances Left.";
-        }
-
-        return $"National ID or Password is incorrect! {chances - 1} Chance Left.";
     }
 }

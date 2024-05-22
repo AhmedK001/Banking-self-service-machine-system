@@ -257,5 +257,47 @@
     "Amount": 900,
     "ReciverId": null,
     "Date": "2024-04-27T20:50:23.0056421+03:00"
+  },
+  {
+    "NationalId": 88998765,
+    "Type": "Deposit",
+    "Amount": 700,
+    "ReciverId": null,
+    "Date": "2024-05-11T12:14:06.9852385+03:00"
+  },
+  {
+    "NationalId": 88998765,
+    "Type": "Deposit",
+    "Amount": 500,
+    "ReciverId": null,
+    "Date": "2024-05-11T12:15:10.5674084+03:00"
+  },
+  {
+    "NationalId": 88998765,
+    "Type": "Transaction",
+    "Amount": 150,
+    "ReciverId": 42142142,
+    "Date": "2024-05-11T12:16:40.8372208+03:00"
+  },
+  {
+    "NationalId": 88998765,
+    "Type": "Transaction",
+    "Amount": 150,
+    "ReciverId": 42142142,
+    "Date": "2024-05-11T12:17:53.7290897+03:00"
+  },
+  {
+    "NationalId": 88998765,
+    "Type": "Withdraw",
+    "Amount": 200,
+    "ReciverId": null,
+    "Date": "2024-05-11T12:19:14.3956298+03:00"
+  },
+  {
+    "NationalId": 89027243,
+    "Type": "Deposit",
+    "Amount": 50,
+    "ReciverId": null,
+    "Date": "2024-05-16T16:29:28.2931029+03:00"
   }
 ]

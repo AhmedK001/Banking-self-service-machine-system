@@ -15,13 +15,13 @@ public class UserAuth : User
     private static string? InputtedFirstNameToRegister { get; set; }
     private static string? InputtedSecondNameToRegister { get; set; }
 
-    public static int LimitLogin { get; set; } = 6;
-    public static int LimitInputId { get; set; } = 6;
-    public static int LimitPassword { get; set; } = 6;
-    public static int LimitPasswordProcess { get; set; } = 6;
-    public static int LimitRegisterNationId { get; set; } = 6;
-    public static int LimitRegisterFirstName { get; set; } = 6;
-    public static int LimitRegisterSecondName { get; set; } = 6;
+    public static int LimitLogin { get; set; } = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitInputId { get; set; } = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitPassword { get; set; } = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitPasswordProcess { get; set; } = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitRegisterNationId { get; set; } = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitRegisterFirstName { get; set; } = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitRegisterSecondName { get; set; } = AttemptsHandler.ANSI_CHANCES;
     public static bool IsPassedOneTime { set; get; }
 
     public static void Login()
@@ -49,38 +49,21 @@ public class UserAuth : User
 
     private static List<User>? HandleLoginInputs()
     {
-        int? userId = GetIdToLogin();
+        int? userId = GetNationalId();
         if (userId == null) return null;
 
-        string? userPassword = GetPasswordToLogin();
+        string? userPassword = GetPassword("normal");
         if (userPassword == null) return null;
 
         bool? checkValidityResult = CheckAccountValidity(userId, userPassword);
         if (checkValidityResult is null or false) return null;
 
-        return ConvertToNonNullAble(userId, userPassword);
+        return InputsConverter.ToNonNullable(userId, userPassword);
     }
 
-    private static List<User>? ConvertToNonNullAble(int? userId, string userPassword)
+    public static int? GetNationalId()
     {
-        int userIdNonNullable = Convert.ToInt32(Convert.ToString(userId));
-        string userPasswordNonNullable = Convert.ToString(userPassword);
-
-        List<User>? currentUserList = new List<User>();
-        currentUserList.Clear();
-        User currentUser = new User(userIdNonNullable, userPasswordNonNullable);
-
-        currentUserList.Add(currentUser);
-
-        return currentUserList;
-    }
-
-    private static int? GetIdToLogin()
-    {
-        if (!AttemptsHandler.LetInputId())
-        {
-            return null;
-        }
+        if (!AttemptsHandler.LetInputId()) return null;
 
         Console.Write(FontStyle.Green("Enter your National ID: "));
         try
@@ -89,29 +72,32 @@ public class UserAuth : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitInputId)));
-            return GetIdToLogin();
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitInputId)));
+            return GetNationalId();
         }
 
+        LimitInputId = AttemptsHandler.ResetAttempts(LimitInputId);
         return UserAccountId;
-        // GetPasswordInputForLoggingIn(); // continue
     }
 
-    private static string? GetPasswordToLogin()
+    public static string? GetPassword(string type)
     {
         if (!AttemptsHandler.LetGetPasswordToLogin()) return null;
 
-        Console.Write(FontStyle.Green("Enter your Password: "));
+        if (type == "normal") Console.Write(FontStyle.Green("Enter your Password: "));
+        if (!type.Equals("normal")) Console.Write(FontStyle.Green($"Enter your {type} Password: "));
+        
         try
         {
             InputtedPasswordForLoggingIn = Console.ReadLine();
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitPasswordProcess)));
-            return GetPasswordToLogin();
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitPasswordProcess)));
+            return GetPassword(type);
         }
 
+        LimitPasswordProcess = AttemptsHandler.ResetAttempts(LimitPasswordProcess);
         return InputtedPasswordForLoggingIn;
     }
 
@@ -121,7 +107,7 @@ public class UserAuth : User
         // if national id does not exist
         if (TreeManager.SearchMethodArray.Count == 0)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.IncorrectInput(LimitInputId)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.IncorrectInput(LimitInputId)));
             AttemptsHandler.IncreaseAttempts(LimitInputId); // Chances --;
             // GetIdInputForLoggingIn();
             return false;
@@ -132,7 +118,7 @@ public class UserAuth : User
         if (password != null && (TreeManager.SearchMethodArray[0].NationalId != inputNationIdForLogin ||
                                  !password.Equals(inputPasswordForLogin)))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.IncorrectInput(LimitInputId)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.IncorrectInput(LimitInputId)));
             AttemptsHandler.IncreaseAttempts(LimitInputId); // Chances --;
             // GetIdInputForLoggingIn();
             return false;
@@ -143,7 +129,7 @@ public class UserAuth : User
 
     private static void DisplaySuccessLogin()
     {
-        Console.Clear();
+        //Console.Clear();
         Console.Write(FontStyle.Red("\n==> "));
         Console.Write(FontStyle.Green("Successfully logged in!"));
         Console.WriteLine(FontStyle.Red(" <=="));
@@ -195,9 +181,9 @@ public class UserAuth : User
 
         // Fix old name repeats without return;
         string? firstName = GetName("first", LimitRegisterFirstName);
-        if (!InputsFilter.IsItName(firstName))
+        if (!Validator.IsItName(firstName))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitRegisterFirstName)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitRegisterFirstName)));
             return HandleFirstName();
         }
 
@@ -210,9 +196,9 @@ public class UserAuth : User
 
         string? secondName = GetName("second", LimitRegisterSecondName);
 
-        if (!InputsFilter.IsItName(secondName))
+        if (!Validator.IsItName(secondName))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitRegisterSecondName)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitRegisterSecondName)));
             return HandleSecondName();
         }
 
@@ -230,7 +216,7 @@ public class UserAuth : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(limit)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(limit)));
             return null;
         }
 
@@ -249,9 +235,9 @@ public class UserAuth : User
         }
 
         int nationalIdNotNull = (int)nationalId;
-        if (!InputsFilter.IsItNationalId(nationalIdNotNull))
+        if (!Validator.IsNationalId(nationalIdNotNull))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitRegisterNationId)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitRegisterNationId)));
             return HandleNationalId();
         }
 
@@ -274,7 +260,7 @@ public class UserAuth : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(limit)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(limit)));
             return null;
         }
 
@@ -288,7 +274,7 @@ public class UserAuth : User
         Thread.Sleep(3000);
 
         Console.Clear();
-        AttemptsHandler.ResetLimitations();
+        AttemptsHandler.ResetSystemLimitations();
         ServiceMachine.LoginOrRegister();
     }
 
@@ -296,10 +282,10 @@ public class UserAuth : User
     {
         if (!AttemptsHandler.LetHandlePassword()) return null;
 
-        string? password = GetPassword();
-        if (!InputsFilter.IsItPassword(password))
+        string? password = GetPasswordToRegister();
+        if (!Validator.IsPassword(password))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitPassword)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitPassword)));
             HandlePassword();
             return null;
         }
@@ -307,7 +293,7 @@ public class UserAuth : User
         return password;
     }
 
-    private static string? GetPassword()
+    private static string? GetPasswordToRegister()
     {
         Console.Write(FontStyle.Green("Enter Your Password..(Equal to or more than 8 chars.): "));
         try
@@ -316,7 +302,7 @@ public class UserAuth : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitPassword)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitPassword)));
             return null;
         }
 
@@ -338,6 +324,18 @@ public class UserAuth : User
         Console.WriteLine(FontStyle.SpaceLine());
         Console.WriteLine(FontStyle.Green("=* Registered Successfully!! *="));
         Console.WriteLine(FontStyle.SpaceLine() + "\n\n");
+    }
+
+    public static void ResetLimitations()
+    {
+        IsPassedOneTime = false;
+        LimitLogin = AttemptsHandler.ANSI_CHANCES;
+        LimitPassword = AttemptsHandler.ANSI_CHANCES;
+        LimitRegisterNationId = AttemptsHandler.ANSI_CHANCES;
+        LimitRegisterFirstName = AttemptsHandler.ANSI_CHANCES;
+        LimitRegisterSecondName = AttemptsHandler.ANSI_CHANCES;
+        LimitInputId = AttemptsHandler.ANSI_CHANCES;
+        LimitPasswordProcess = AttemptsHandler.ANSI_CHANCES;
     }
 
     public static void ResetOldData()

@@ -245,7 +245,7 @@ public class TreeManager
     {
         if (IsTreeEmpty())
         {
-            Console.WriteLine("UserAvlTree is empty.");
+            Console.WriteLine("User Tree is empty.");
             return;
         }
 

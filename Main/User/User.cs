@@ -23,8 +23,8 @@ public class User
     
     public User(int nationalId, string password)
     {
-        this.NationalId = nationalId;
-        this.Password = password;
+        NationalId = nationalId;
+        Password = password;
     }
     
     public override string ToString()

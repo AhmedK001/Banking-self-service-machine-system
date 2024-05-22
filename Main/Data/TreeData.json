@@ -722,15 +722,15 @@
   },
   {
     "NationalId": 89027243,
-    "Password": "89027243",
-    "Balance": 1700,
+    "Password": "890272431",
+    "Balance": 1750,
     "FirstName": "Kingston",
     "LastName": "Stom"
   },
   {
     "NationalId": 42142142,
     "Password": "dwfwafwfww",
-    "Balance": 700,
+    "Balance": 1000,
     "FirstName": "Ahmed",
     "LastName": "Korany"
   },
@@ -740,5 +740,19 @@
     "Balance": 200,
     "FirstName": "Ahmed",
     "LastName": "Iodoo"
+  },
+  {
+    "NationalId": 11443322,
+    "Password": "Passwordy",
+    "Balance": 0,
+    "FirstName": "Ahmed",
+    "LastName": "Korany"
+  },
+  {
+    "NationalId": 88998765,
+    "Password": "P88998765",
+    "Balance": 700,
+    "FirstName": "Mohamed",
+    "LastName": "Korany"
   }
 ]

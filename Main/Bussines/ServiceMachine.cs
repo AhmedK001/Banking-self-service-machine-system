@@ -5,15 +5,15 @@ public class ServiceMachine : User
     private static double _balance;
 
     // Limitations
-    public static int LimitSemiUi = 6;
-    public static int LimitMainUi = 6;
-    public static int LimitDepositeProcess = 6;
-    public static int LimitWithdrawProcess = 6;
-    public static int LimitTransferProcess = 6;
-    public static int LimitStatementProcess = 6;
-    public static int LimitIdToTransfer = 6;
+    public static int LimitSemiUi = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitMainUi = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitDepositeProcess = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitWithdrawProcess = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitTransferProcess = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitStatementProcess = AttemptsHandler.ANSI_CHANCES;
+    public static int LimitIdToTransfer = AttemptsHandler.ANSI_CHANCES;
 
-    public static int LimitValueToTrans = 6;
+    public static int LimitValueToTrans = AttemptsHandler.ANSI_CHANCES;
 
     // Process helpers
     private static double _amountToTrans;
@@ -108,7 +108,7 @@ public class ServiceMachine : User
         catch (Exception)
         {
             Console.Clear();
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(AccountManager.LimitInputForLoginOrRegister)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(PasswordModifyer.LimitInputForLoginOrRegister)));
             LoginOrRegister();
             return -1;
         }
@@ -121,19 +121,19 @@ public class ServiceMachine : User
         switch (choice)
         {
             case 1:
-                AccountManager.LimitInputForLoginOrRegister =
-                    AttemptsHandler.ResetAttempts(AccountManager.LimitInputForLoginOrRegister);
+                PasswordModifyer.LimitInputForLoginOrRegister =
+                    AttemptsHandler.ResetAttempts(PasswordModifyer.LimitInputForLoginOrRegister);
                 UserAuth.Login();
                 break;
             case 2:
-                AccountManager.LimitInputForLoginOrRegister =
-                    AttemptsHandler.ResetAttempts(AccountManager.LimitInputForLoginOrRegister);
+                PasswordModifyer.LimitInputForLoginOrRegister =
+                    AttemptsHandler.ResetAttempts(PasswordModifyer.LimitInputForLoginOrRegister);
                 UserAuth.Register();
                 break;
             default:
                 Console.Clear();
                 Console.WriteLine(
-                    FontStyle.Red(InputsFilter.InvalidOption(AccountManager.LimitInputForLoginOrRegister)));
+                    FontStyle.Red(ValidatorMessenger.InvalidOption(PasswordModifyer.LimitInputForLoginOrRegister)));
                 LoginOrRegister();
                 break;
         }
@@ -172,7 +172,7 @@ public class ServiceMachine : User
         catch (Exception)
         {
             Console.Clear();
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitMainUi)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitMainUi)));
             MainUi();
             return -1;
         }
@@ -212,7 +212,7 @@ public class ServiceMachine : User
             case 9:
                 Console.Clear();
                 LimitMainUi = AttemptsHandler.ResetAttempts(LimitMainUi);
-                AccountManager.ChangePassword();
+                PasswordModifyer.ChangePassword();
                 break;
             case 0:
                 Console.Clear();
@@ -220,7 +220,7 @@ public class ServiceMachine : User
                 break;
             default:
                 Console.Clear();
-                Console.WriteLine(FontStyle.Red(InputsFilter.InvalidOption(LimitMainUi)));
+                Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidOption(LimitMainUi)));
                 MainUi();
                 break;
         }
@@ -268,7 +268,7 @@ public class ServiceMachine : User
                 break;
             default:
                 Console.Clear();
-                Console.WriteLine(FontStyle.Red(InputsFilter.InvalidOption(LimitSemiUi)));
+                Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidOption(LimitSemiUi)));
                 SemiUi();
                 break;
         }
@@ -282,7 +282,7 @@ public class ServiceMachine : User
 
         int receiverId = GetIdToTransfer();
 
-        if (!InputsFilter.IsItNationalId(receiverId))
+        if (!Validator.IsNationalId(receiverId))
         {
             Console.WriteLine(FontStyle.Red("Not Found."));
             SemiUi();
@@ -321,7 +321,7 @@ public class ServiceMachine : User
         catch (Exception)
         {
             GetIdToTransfer();
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitIdToTransfer)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitIdToTransfer)));
             return -1;
         }
 
@@ -361,7 +361,7 @@ public class ServiceMachine : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitValueToTrans)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitValueToTrans)));
             GetAmountToTransfer();
             return -1;
         }
@@ -372,16 +372,16 @@ public class ServiceMachine : User
 
     private static bool IsValidTransferAmount(double amount)
     {
-        if (!InputsFilter.IsBiggerThan49(amount))
+        if (!Validator.IsBiggerThan49(amount))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.LessThan50()));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.LessThan50()));
             GetAmountToTransfer();
             return false;
         }
 
-        if (!InputsFilter.IsLessThan10001(amount))
+        if (!Validator.IsLessThan10001(amount))
         {
-            InputsFilter.BiggerThan10000();
+            ValidatorMessenger.BiggerThan10000();
             GetAmountToTransfer();
             return false;
         }
@@ -446,7 +446,7 @@ public class ServiceMachine : User
         _bankStatement.AddTransaction(UserAuth.UserAccountId, amountToTransfer, receiverId);
 
 
-        Console.Clear();
+        //Console.Clear();
         Console.Write(FontStyle.Red("==> "));
         Console.Write(FontStyle.Green("Transferred successfully."));
         Console.Write(FontStyle.Red(" <==\n"));
@@ -478,7 +478,7 @@ public class ServiceMachine : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitWithdrawProcess)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitWithdrawProcess)));
             Withdraw();
             return -1;
         }
@@ -488,23 +488,23 @@ public class ServiceMachine : User
 
     private static bool IsValidWithdraw(double amount)
     {
-        if (!InputsFilter.IsBiggerThan49(amount))
+        if (!Validator.IsBiggerThan49(amount))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.LessThan50()));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.LessThan50()));
             Withdraw();
             return false;
         }
 
-        if (!InputsFilter.IsLessThan5001(amount))
+        if (!Validator.IsLessThan5001(amount))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.BiggerThan5000()));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.BiggerThan5000()));
             Withdraw();
             return false;
         }
 
-        if (!InputsFilter.IsMultipleOf50Or100(amount))
+        if (!Validator.IsMultipleOf50Or100(amount))
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.NotMultipleOf50Or100()));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.NotMultipleOf50Or100()));
             Withdraw();
             return false;
         }
@@ -581,7 +581,7 @@ public class ServiceMachine : User
 
         // Add to statements
         _bankStatement.AddDeposit(UserAuth.UserAccountId, _amountToDeposit);
-        System.Threading.Thread.Sleep(200);
+        Thread.Sleep(200);
         SemiUi();
     }
 
@@ -595,7 +595,7 @@ public class ServiceMachine : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitDepositeProcess)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitDepositeProcess)));
             Deposit();
             return -1;
         }
@@ -611,7 +611,7 @@ public class ServiceMachine : User
             return false;
         }
 
-        if (!InputsFilter.IsMultipleOf50Or100(amount))
+        if (!Validator.IsMultipleOf50Or100(amount))
         {
             Console.WriteLine(FontStyle.Red("Please enter a number multiples of 50 or 100: "));
             return false;
@@ -651,7 +651,7 @@ public class ServiceMachine : User
         catch (Exception)
         {
             Console.Clear();
-            Console.WriteLine(FontStyle.Red(InputsFilter.InvalidInput(LimitStatementProcess)));
+            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitStatementProcess)));
             Statements();
             return;
         }
@@ -665,30 +665,42 @@ public class ServiceMachine : User
         {
             case 1:
                 Console.Clear();
-                AttemptsHandler.ResetAttempts(LimitStatementProcess);
+                LimitStatementProcess = AttemptsHandler.ResetAttempts(LimitStatementProcess);
                 _bankStatement.FilterByWithdraw(UserAuth.UserAccountId);
                 break;
             case 2:
                 Console.Clear();
-                AttemptsHandler.ResetAttempts(LimitStatementProcess);
+                LimitStatementProcess = AttemptsHandler.ResetAttempts(LimitStatementProcess);
                 _bankStatement.FilterByDeposit(UserAuth.UserAccountId);
                 break;
             case 3:
                 Console.Clear();
-                AttemptsHandler.ResetAttempts(LimitStatementProcess);
+                LimitStatementProcess = AttemptsHandler.ResetAttempts(LimitStatementProcess);
                 _bankStatement.FilterByTransaction(UserAuth.UserAccountId);
                 break;
             case 4:
                 Console.Clear();
-                AttemptsHandler.ResetAttempts(LimitStatementProcess);
+                LimitStatementProcess = AttemptsHandler.ResetAttempts(LimitStatementProcess);
                 _bankStatement.FilterById(UserAuth.UserAccountId);
                 break;
             default:
                 Console.Clear();
-                Console.WriteLine(FontStyle.Red(InputsFilter.InvalidOption(LimitStatementProcess)));
+                Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidOption(LimitStatementProcess)));
                 Statements();
                 break;
         }
+    }
+
+    public static void ResetLimitations()
+    {
+        LimitSemiUi = AttemptsHandler.ANSI_CHANCES;
+        LimitMainUi = AttemptsHandler.ANSI_CHANCES;
+        LimitDepositeProcess = AttemptsHandler.ANSI_CHANCES;
+        LimitWithdrawProcess = AttemptsHandler.ANSI_CHANCES;
+        LimitTransferProcess = AttemptsHandler.ANSI_CHANCES;
+        LimitIdToTransfer = AttemptsHandler.ANSI_CHANCES;
+        LimitStatementProcess = AttemptsHandler.ANSI_CHANCES;
+        LimitValueToTrans = AttemptsHandler.ANSI_CHANCES;
     }
 
     private static void SlowClearConsole(int speed)
@@ -710,7 +722,7 @@ public class ServiceMachine : User
         Thread.Sleep(100);
 
         UserAuth.ResetOldData();
-        AttemptsHandler.ResetLimitations();
+        AttemptsHandler.ResetSystemLimitations();
 
         SlowClearConsole(20);
         Console.WriteLine(FontStyle.White("Thanks for using our SSM."));

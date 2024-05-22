@@ -2,26 +2,25 @@ namespace Main;
 
 public class AttemptsHandler
 {
+    public static readonly int ANSI_CHANCES = 5; // chances for each limit in the whole system
+    public static int GeneralLimit = ANSI_CHANCES;
+    public static int InputsLimit = ANSI_CHANCES;
+
+
     public static int IncreaseAttempts(int limit)
     {
-        limit--;
-        return limit;
+        return --limit;
     }
 
     public static int ResetAttempts(int limit)
     {
-        limit = 6;
-        return limit;
+        limit = ANSI_CHANCES;
+        return ANSI_CHANCES;
     }
 
     public static bool IsExceededAttempts(int limit)
     {
-        if (limit <= 0)
-        {
-            return true;
-        }
-
-        return false;
+        return limit <= 0;
     }
 
     public static void HandleExceededAttempts()
@@ -55,10 +54,10 @@ public class AttemptsHandler
 
     public static bool LetInputId()
     {
-        UserAuth.LimitInputId = AttemptsHandler.IncreaseAttempts(UserAuth.LimitInputId);
-        if (AttemptsHandler.IsExceededAttempts(UserAuth.LimitInputId))
+        UserAuth.LimitInputId = IncreaseAttempts(UserAuth.LimitInputId);
+        if (IsExceededAttempts(UserAuth.LimitInputId))
         {
-            AttemptsHandler.HandleExceededAttempts();
+            HandleExceededAttempts();
             return false;
         }
 
@@ -125,10 +124,10 @@ public class AttemptsHandler
         return true;
     }
 
-    public static bool LetGetIdForChangingPassword()
+    public static bool LetIsIdForCurrentAccount()
     {
-        AccountManager.LimitIdForChangingPassword = IncreaseAttempts(AccountManager.LimitIdForChangingPassword);
-        if (IsExceededAttempts(AccountManager.LimitIdForChangingPassword))
+        PasswordModifyer.LimitIdForChangingPassword = IncreaseAttempts(PasswordModifyer.LimitIdForChangingPassword);
+        if (IsExceededAttempts(PasswordModifyer.LimitIdForChangingPassword))
         {
             HandleExceededAttempts();
             return false;
@@ -139,8 +138,8 @@ public class AttemptsHandler
 
     public static bool LetInputOldPassword()
     {
-        AccountManager.LimitOldPassword = IncreaseAttempts(AccountManager.LimitOldPassword);
-        if (IsExceededAttempts(AccountManager.LimitOldPassword))
+        PasswordModifyer.LimitOldPassword = IncreaseAttempts(PasswordModifyer.LimitOldPassword);
+        if (IsExceededAttempts(PasswordModifyer.LimitOldPassword))
         {
             HandleExceededAttempts();
             return false;
@@ -151,8 +150,8 @@ public class AttemptsHandler
 
     public static bool LetInputNewPassword()
     {
-        AccountManager.LimitNewPassword = IncreaseAttempts(AccountManager.LimitNewPassword);
-        if (IsExceededAttempts(AccountManager.LimitNewPassword))
+        PasswordModifyer.LimitNewPassword = IncreaseAttempts(PasswordModifyer.LimitNewPassword);
+        if (IsExceededAttempts(PasswordModifyer.LimitNewPassword))
         {
             HandleExceededAttempts();
             return false;
@@ -163,8 +162,8 @@ public class AttemptsHandler
 
     public static bool LetLoginOrRegister()
     {
-        AccountManager.LimitInputForLoginOrRegister = IncreaseAttempts(AccountManager.LimitInputForLoginOrRegister);
-        if (IsExceededAttempts(AccountManager.LimitInputForLoginOrRegister))
+        PasswordModifyer.LimitInputForLoginOrRegister = IncreaseAttempts(PasswordModifyer.LimitInputForLoginOrRegister);
+        if (IsExceededAttempts(PasswordModifyer.LimitInputForLoginOrRegister))
         {
             HandleExceededAttempts();
             return false;
@@ -256,30 +255,54 @@ public class AttemptsHandler
 
         return true;
     }
+    
+    public static bool GeneralLet()
+    {
+        GeneralLimit = IncreaseAttempts(GeneralLimit);
+        if (IsExceededAttempts(GeneralLimit))
+        {
+            HandleExceededAttempts();
+            return false;
+        }
+
+        return true;
+    }
+    
+    public static void ResetGeneralLet()
+    {
+        GeneralLimit = ANSI_CHANCES;
+    }
+    
+    public static bool LetInput()
+    {
+        InputsLimit = IncreaseAttempts(InputsLimit);
+        if (IsExceededAttempts(InputsLimit))
+        {
+            HandleExceededAttempts();
+            return false;
+        }
+
+        return true;
+    }
+    
+    public static void ResetLetInput()
+    {
+        InputsLimit = ANSI_CHANCES;
+    }
 
     public static void ResetLimitations()
     {
-        ServiceMachine.LimitSemiUi = 6;
-        ServiceMachine.LimitMainUi = 6;
-        ServiceMachine.LimitDepositeProcess = 6;
-        ServiceMachine.LimitWithdrawProcess = 6;
-        ServiceMachine.LimitTransferProcess = 6;
-        ServiceMachine.LimitIdToTransfer = 6;
-        ServiceMachine.LimitStatementProcess = 6;
-        ServiceMachine.LimitValueToTrans = 6;
-        
-        UserAuth.IsPassedOneTime = false;
-        UserAuth.LimitLogin = 6;
-        UserAuth.LimitPassword = 6;
-        UserAuth.LimitRegisterNationId = 6;
-        UserAuth.LimitRegisterFirstName = 6;
-        UserAuth.LimitRegisterSecondName = 6;
-        UserAuth.LimitInputId = 6;
-        UserAuth.LimitPasswordProcess = 6;
+        // reset class limitations
+        ResetLetInput();
+        ResetGeneralLet();
+    }
 
-        AccountManager.LimitIdForChangingPassword = 6;
-        AccountManager.LimitOldPassword = 6;
-        AccountManager.LimitNewPassword = 6;
-        AccountManager.LimitInputForLoginOrRegister = 6;
+    public static void ResetSystemLimitations()
+    {
+        // reset each file limitations
+        ResetLimitations();
+        ServiceMachine.ResetLimitations();
+        UserAuth.ResetLimitations();
+        PasswordModifyer.ResetLimitations();
     }
 }
