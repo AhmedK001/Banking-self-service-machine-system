@@ -31,7 +31,7 @@ public class AttemptsHandler
 
     public static void HandleExceededAttemptsMassages()
     {
-        Console.WriteLine(FontStyle.Red("Your chances are out!"));
+        Writer.WriteLine("Your chances are out!","red");
     }
 
     public static bool LetLogin()

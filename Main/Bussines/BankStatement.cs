@@ -42,7 +42,7 @@ public class BankStatement
     {
         for (int i = 0; i < list.Count; i++)
         {
-            Console.WriteLine(FontStyle.White($"\n{list[i].ToString()}\n"));
+            Console.WriteLine(Font.White($"\n{list[i].ToString()}\n"));
         }
 
         ServiceMachine.SemiUi();
@@ -61,12 +61,12 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine(FontStyle.Red("No Operations found."));
+            Writer.WriteLine("No Operations found.", "red");
             ServiceMachine.SemiUi();
             return;
         }
 
-        Console.WriteLine(FontStyle.White(FilterByIdMessage()));
+        Console.WriteLine(Font.White(FilterByIdMessage()));
         DisplayStatements(SearchedStatements);
     }
 
@@ -83,12 +83,12 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine(FontStyle.Red("No Operations found."));
+            Writer.WriteLine("No Operations found.","red");
             ServiceMachine.SemiUi();
             return;
         }
 
-        Console.WriteLine(FontStyle.White(FilterByWithdrawMessage()));
+        Console.WriteLine(Font.White(FilterByWithdrawMessage()));
         DisplayStatements(SearchedStatements);
     }
 
@@ -105,13 +105,14 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine(FontStyle.Red("No Operations found."));
+            Writer.WriteLine("No Operations found.","red");
             ServiceMachine.SemiUi();
             return;
         }
 
-        Console.WriteLine(FontStyle.White(FilterByDepositMessage()));
+        Console.WriteLine(Font.White(FilterByDepositMessage()));
         DisplayStatements(SearchedStatements);
+        
     }
 
     public void FilterByTransaction(int nationalId)
@@ -127,12 +128,12 @@ public class BankStatement
 
         if (!SearchedStatements.Any())
         {
-            Console.WriteLine(FontStyle.Red("No Operations found."));
+            Writer.WriteLine("No Operations found.","red");
             ServiceMachine.SemiUi();
             return;
         }
 
-        Console.WriteLine(FontStyle.White(FilterByTransactionMessage()));
+        Writer.WriteLine(FilterByTransactionMessage(),"white");
         DisplayStatements(SearchedStatements);
     }
 

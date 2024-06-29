@@ -33,7 +33,7 @@ public class UserAuth : User
         if (!IsPassedOneTime)
         {
             IsPassedOneTime = true;
-            Console.WriteLine(FontStyle.White("\n====* Here you can Login. *===="));
+            Writer.WriteLine("\n====* Here you can Login. *====", "white");
         }
 
         if (HandleLoginInputs() is null)
@@ -65,14 +65,14 @@ public class UserAuth : User
     {
         if (!AttemptsHandler.LetInputId()) return null;
 
-        Console.Write(FontStyle.Green("Enter your National ID: "));
+        Writer.Write("Enter your National ID: ", "green");
         try
         {
             UserAccountId = Convert.ToInt32(Console.ReadLine());
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitInputId)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitInputId), "red");
             return GetNationalId();
         }
 
@@ -84,16 +84,16 @@ public class UserAuth : User
     {
         if (!AttemptsHandler.LetGetPasswordToLogin()) return null;
 
-        if (type == "normal") Console.Write(FontStyle.Green("Enter your Password: "));
-        if (!type.Equals("normal")) Console.Write(FontStyle.Green($"Enter your {type} Password: "));
-        
+        if (type == "normal") Writer.Write("Enter your Password: ", "green");
+        if (!type.Equals("normal")) Writer.Write($"Enter your {type} Password: ", "green");
+
         try
         {
             InputtedPasswordForLoggingIn = Console.ReadLine();
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitPasswordProcess)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitPasswordProcess), "red");
             return GetPassword(type);
         }
 
@@ -107,9 +107,8 @@ public class UserAuth : User
         // if national id does not exist
         if (TreeManager.SearchMethodArray.Count == 0)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.IncorrectInput(LimitInputId)));
+            Writer.WriteLine(Messenger.IncorrectInput(LimitInputId), "red");
             AttemptsHandler.IncreaseAttempts(LimitInputId); // Chances --;
-            // GetIdInputForLoggingIn();
             return false;
         }
 
@@ -118,9 +117,8 @@ public class UserAuth : User
         if (password != null && (TreeManager.SearchMethodArray[0].NationalId != inputNationIdForLogin ||
                                  !password.Equals(inputPasswordForLogin)))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.IncorrectInput(LimitInputId)));
+            Writer.WriteLine(Messenger.IncorrectInput(LimitInputId), "red");
             AttemptsHandler.IncreaseAttempts(LimitInputId); // Chances --;
-            // GetIdInputForLoggingIn();
             return false;
         }
 
@@ -130,9 +128,9 @@ public class UserAuth : User
     private static void DisplaySuccessLogin()
     {
         //Console.Clear();
-        Console.Write(FontStyle.Red("\n==> "));
-        Console.Write(FontStyle.Green("Successfully logged in!"));
-        Console.WriteLine(FontStyle.Red(" <=="));
+        Writer.Write("\n==> ", "red");
+        Writer.Write("Successfully logged in!", "green");
+        Writer.WriteLine(" <==", "red");
     } // --- END OF LOGGING IN PROCESS ---
 
     // --- START OF REGISTRATION PROCESS ---
@@ -140,7 +138,7 @@ public class UserAuth : User
     {
         DataHandler.LoadAccountsData();
 
-        Console.WriteLine(FontStyle.White("====* Registration *===="));
+        Writer.WriteLine("====* Registration *====", "white");
 
         // if newUser instance != null completeRegistration
         User? newUser = HandelUserInfo();
@@ -183,7 +181,7 @@ public class UserAuth : User
         string? firstName = GetName("first", LimitRegisterFirstName);
         if (!Validator.IsItName(firstName))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitRegisterFirstName)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitRegisterFirstName), "red");
             return HandleFirstName();
         }
 
@@ -198,7 +196,7 @@ public class UserAuth : User
 
         if (!Validator.IsItName(secondName))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitRegisterSecondName)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitRegisterSecondName), "red");
             return HandleSecondName();
         }
 
@@ -207,7 +205,7 @@ public class UserAuth : User
 
     private static string? GetName(string nameType, int limit)
     {
-        Console.Write(FontStyle.Green($"Enter your {nameType} name: "));
+        Writer.Write($"Enter your {nameType} name: ", "green");
 
         string? name;
         try
@@ -216,7 +214,7 @@ public class UserAuth : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(limit)));
+            Writer.WriteLine(Messenger.InvalidInput(limit), "red");
             return null;
         }
 
@@ -237,7 +235,7 @@ public class UserAuth : User
         int nationalIdNotNull = (int)nationalId;
         if (!Validator.IsNationalId(nationalIdNotNull))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitRegisterNationId)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitRegisterNationId), "red");
             return HandleNationalId();
         }
 
@@ -252,7 +250,7 @@ public class UserAuth : User
 
     private static int? GetNationalId(int limit)
     {
-        Console.Write(FontStyle.Green("Enter your National ID (exactly 8 digits): "));
+        Writer.Write("Enter your National ID (exactly 8 digits): ", "green");
 
         try
         {
@@ -260,7 +258,7 @@ public class UserAuth : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(limit)));
+            Writer.WriteLine(Messenger.InvalidInput(limit), "red");
             return null;
         }
 
@@ -270,7 +268,7 @@ public class UserAuth : User
     private static void HandleIfUsedNationalId()
     {
         Console.Clear();
-        Console.WriteLine(FontStyle.Red("\nEach user can has only one account.!"));
+        Writer.WriteLine("\nEach user can has only one account.!", "red");
         Thread.Sleep(3000);
 
         Console.Clear();
@@ -285,7 +283,7 @@ public class UserAuth : User
         string? password = GetPasswordToRegister();
         if (!Validator.IsPassword(password))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitPassword)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitPassword), "red");
             HandlePassword();
             return null;
         }
@@ -295,14 +293,14 @@ public class UserAuth : User
 
     private static string? GetPasswordToRegister()
     {
-        Console.Write(FontStyle.Green("Enter Your Password..(Equal to or more than 8 chars.): "));
+        Writer.Write("Enter Your Password..(Equal to or more than 8 chars.): ", "green");
         try
         {
             InputtedPasswordToRegister = Console.ReadLine();
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitPassword)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitPassword), "red");
             return null;
         }
 
@@ -321,9 +319,9 @@ public class UserAuth : User
 
     private static void DisplaySuccessRegister()
     {
-        Console.WriteLine(FontStyle.SpaceLine());
-        Console.WriteLine(FontStyle.Green("=* Registered Successfully!! *="));
-        Console.WriteLine(FontStyle.SpaceLine() + "\n\n");
+        Writer.WriteLine(Font.SpaceLine(),"white");
+        Writer.WriteLine("=* Registered Successfully!! *=", "green");
+        Writer.WriteLine(Font.SpaceLine() + "\n\n","white");
     }
 
     public static void ResetLimitations()

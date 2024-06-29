@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 
 namespace Main;
@@ -19,15 +20,15 @@ public class TreeManager
     {
         try
         {
-            var contens = File.ReadAllText(ANSI_TREE_DATA_FILE);
-            var deserializedUsers = JsonSerializer.Deserialize<List<User>>(contens);
+            var contents = File.ReadAllText(ANSI_TREE_DATA_FILE);
+            var deserializedUsers = JsonSerializer.Deserialize<List<User>>(contents);
 
             for (var i = 0; i < deserializedUsers.Count; i++)
                 InsertOnTheTree(deserializedUsers[i]); // insert the data to tree
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error loading tree data: " + e.Message);
+            Writer.WriteLine("Error loading tree data: " + e.Message, "red");
         }
     }
 
@@ -84,7 +85,7 @@ public class TreeManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error storing tree data to file: " + e.Message);
+            Writer.WriteLine("Error storing tree data to file: " + e.Message, "red");
         }
     }
 
@@ -99,7 +100,7 @@ public class TreeManager
                     // Update the new balance
                     data.Balance = SearchMethodArray[0].Balance;
                     // Update the password if any changes
-                    Console.WriteLine(data.Balance);
+                    Writer.WriteLine(data.Balance.ToString(), "green");
 
                     if (data.Password != SearchMethodArray[0].Password)
                         data.Password = SearchMethodArray[0].Password;
@@ -110,7 +111,7 @@ public class TreeManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error updating new changes: " + e.Message);
+            Writer.WriteLine("Error updating new changes: " + e.Message, "red");
         }
 
         StoreTreeData(); // Update the changes to the tree
@@ -127,7 +128,7 @@ public class TreeManager
                     // Update the new balance
                     data.Balance = SearchMethodArrayForReceiver[0].Balance;
                     // Display the receiver new balance
-                    Console.WriteLine(data.Balance);
+                    Writer.WriteLine(data.Balance.ToString(), "green");
                 }
 
                 break;
@@ -135,7 +136,7 @@ public class TreeManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error updating new changes for receiver: " + e.Message);
+            Writer.WriteLine("Error updating new changes for receiver: " + e.Message, "red");
         }
 
         StoreTreeData(); // Update the changes to the tree
@@ -146,7 +147,6 @@ public class TreeManager
         SearchMethodArray.Clear(); // Clear the array before performing search
         if (IsTreeEmpty()) return;
 
-
         var node = Root;
         while (node != null)
         {
@@ -155,7 +155,7 @@ public class TreeManager
             {
                 SearchMethodArray.Clear();
                 SearchMethodArray.Add(node.Data);
-                // Console.WriteLine("Found: " + node.Data);
+                // Writer.WriteLine("Found: " + node.Data, "white");
                 return;
             }
 
@@ -167,7 +167,7 @@ public class TreeManager
         }
 
         SearchMethodArray.Clear();
-        // Console.WriteLine("Not found.");
+        // Writer.WriteLine("Not found.", "red");
     }
 
     public static bool IsUsedId(int nationalId)
@@ -177,7 +177,7 @@ public class TreeManager
         var node = Root;
         while (node != null)
         {
-            var result = CompareIds(node,nationalId);
+            var result = CompareIds(node, nationalId);
             if (result == 0)
             {
                 return true;
@@ -194,9 +194,7 @@ public class TreeManager
 
     private static bool IsTreeEmpty()
     {
-        if (Root != null) return false;
-
-        return true;
+        return Root == null;
     }
 
     private static int CompareIds(TreeNode node, int id)
@@ -204,13 +202,12 @@ public class TreeManager
         return id.CompareTo(node.Data.NationalId);
     }
 
-
     public static void SearchOnTreeForReceiver(int nationalId)
     {
         SearchMethodArrayForReceiver.Clear(); // Clear the array before performing search
         if (Root == null)
         {
-            Console.WriteLine("UserAvlTree is empty.");
+            Writer.WriteLine("UserAvlTree is empty.", "red");
             return;
         }
 
@@ -222,7 +219,7 @@ public class TreeManager
             {
                 SearchMethodArrayForReceiver.Clear();
                 SearchMethodArrayForReceiver.Add(node.Data);
-                // Console.WriteLine("Found: " + node.Data);
+                // Writer.WriteLine("Found: " + node.Data, "white");
                 // When find receiver account, continue
                 //ServiceMachine.CheckExistsForReceiverAccount();
                 return;
@@ -236,7 +233,7 @@ public class TreeManager
         }
 
         SearchMethodArrayForReceiver.Clear();
-        Console.WriteLine(FontStyle.Red("\n\nNot found."));
+        Writer.WriteLine("\n\nNot found.", "red");
         ServiceMachine.SemiUi();
     }
 
@@ -245,7 +242,7 @@ public class TreeManager
     {
         if (IsTreeEmpty())
         {
-            Console.WriteLine("User Tree is empty.");
+            Writer.WriteLine("User Tree is empty.", "red");
             return;
         }
 
@@ -255,37 +252,40 @@ public class TreeManager
         while (queue.Count > 0)
         {
             var node = queue.Dequeue();
-            Console.WriteLine(FontStyle.SpaceLine());
-            Console.WriteLine("Node National ID: " + node.Data.NationalId);
-            Console.WriteLine("        Password: " + node.Data.Password);
-            Console.WriteLine("         Balance: " + node.Data.Balance);
-            Console.WriteLine("      First Name: " + node.Data.FirstName);
-            Console.WriteLine("       Last Name: " + node.Data.LastName);
-            Console.WriteLine("            Root: " + node.Data.NationalId);
+            Writer.WriteLine(Font.SpaceLine(), "white");
+            var output = new StringBuilder();
+            output.AppendLine("Node National ID: " + node.Data.NationalId);
+            output.AppendLine("        Password: " + node.Data.Password);
+            output.AppendLine("         Balance: " + node.Data.Balance);
+            output.AppendLine("      First Name: " + node.Data.FirstName);
+            output.AppendLine("       Last Name: " + node.Data.LastName);
+            output.AppendLine("            Root: " + node.Data.NationalId);
 
-            Console.Write("       Left Node: ");
+            Writer.WriteLine(output.ToString(), "white");
+
+            Writer.Write("       Left Node: ", "white");
             if (node.Left != null)
             {
-                Console.WriteLine(node.Left.Data.NationalId);
+                Writer.WriteLine(node.Left.Data.NationalId.ToString(), "white");
                 queue.Enqueue(node.Left);
             }
             else
             {
-                Console.WriteLine("null");
+                Writer.WriteLine("null", "white");
             }
 
-            Console.Write("      Right Node: ");
+            Writer.Write("      Right Node: ", "white");
             if (node.Right != null)
             {
-                Console.WriteLine(node.Right.Data.NationalId);
+                Writer.WriteLine(node.Right.Data.NationalId.ToString(), "white");
                 queue.Enqueue(node.Right);
             }
             else
             {
-                Console.WriteLine("null");
+                Writer.WriteLine("null", "white");
             }
 
-            Console.WriteLine();
+            Writer.WriteLine("", "white");
         }
     }
 }

@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Main;
 
 public class ServiceMachine : User
@@ -38,10 +40,9 @@ public class ServiceMachine : User
 
     protected static void StartPoint()
     {
-        Console.WriteLine(FontStyle.White("*|=====|*       *|=====|*"));
-        Console.WriteLine(FontStyle.Green("Welcome press 0 to start."));
-        Console.WriteLine(FontStyle.White("*|=====|*=======*|=====|*"));
-
+        Writer.WriteLine("*|=====|*       *|=====|*", "white");
+        Writer.WriteLine("Welcome press 0 to start.", "green");
+        Writer.WriteLine("*|=====|*=======*|=====|*", "white");
 
         ChooseOfStartPoint(InputForStartPoint());
     }
@@ -82,9 +83,10 @@ public class ServiceMachine : User
     {
         if (!AttemptsHandler.LetLoginOrRegister()) return;
 
-        Console.WriteLine(FontStyle.White($"\n*==| {WelcomeSystemMessage()} |==*"));
-        Console.WriteLine(FontStyle.Green("\n" + LoginOrRegisterMessage()));
-        Console.Write(FontStyle.White("\nYour Choice: "));
+        Writer.WriteLine($"\n*==| {WelcomeSystemMessage()} |==*", "white");
+        Writer.WriteLine("\n" + LoginOrRegisterMessage(), "green");
+        Writer.WriteLine("\nYour Choice: ", "white");
+
         ChooseForLoginOrRegister(GetInputForLoginOrRegister());
     }
 
@@ -108,7 +110,7 @@ public class ServiceMachine : User
         catch (Exception)
         {
             Console.Clear();
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(PasswordModifyer.LimitInputForLoginOrRegister)));
+            Writer.WriteLine(Messenger.InvalidInput(PasswordModifyer.LimitInputForLoginOrRegister),"red");
             LoginOrRegister();
             return -1;
         }
@@ -132,8 +134,7 @@ public class ServiceMachine : User
                 break;
             default:
                 Console.Clear();
-                Console.WriteLine(
-                    FontStyle.Red(ValidatorMessenger.InvalidOption(PasswordModifyer.LimitInputForLoginOrRegister)));
+                Writer.WriteLine(Messenger.InvalidOption(PasswordModifyer.LimitInputForLoginOrRegister),"red");
                 LoginOrRegister();
                 break;
         }
@@ -143,10 +144,10 @@ public class ServiceMachine : User
     {
         if (!AttemptsHandler.LetMainUi()) return;
 
-        Console.WriteLine(FontStyle.White(MainUiWelcomeMessage()));
-        Console.WriteLine(FontStyle.White("Welcome Mr." + TreeManager.SearchMethodArray[0].FirstName + " .\n"));
-        Console.WriteLine(FontStyle.Green(MainUiChoicesMessage()));
-        Console.Write(FontStyle.White("Your Choice: "));
+        Writer.WriteLine(MainUiWelcomeMessage(), "white");
+        Writer.WriteLine("Welcome Mr." + TreeManager.SearchMethodArray[0].FirstName + " .\n", "green");
+        Writer.WriteLine(MainUiChoicesMessage(), "white");
+        Writer.WriteLine("Your Choice: ", "white");
 
         ChooseOfMainUi(InputForMainUi()); // continue
     }
@@ -172,7 +173,7 @@ public class ServiceMachine : User
         catch (Exception)
         {
             Console.Clear();
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitMainUi)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitMainUi),"red");
             MainUi();
             return -1;
         }
@@ -220,7 +221,7 @@ public class ServiceMachine : User
                 break;
             default:
                 Console.Clear();
-                Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidOption(LimitMainUi)));
+                Writer.WriteLine(Messenger.InvalidOption(LimitMainUi),"red");
                 MainUi();
                 break;
         }
@@ -228,11 +229,10 @@ public class ServiceMachine : User
 
     public static void SemiUi()
     {
-        if(!AttemptsHandler.LetSemiUi()) return;
+        if (!AttemptsHandler.LetSemiUi()) return;
 
-        Console.WriteLine(FontStyle.Green("\n1. Return Main Menu\n0. Log out"));
-        Console.Write(FontStyle.White("\nYour Choice: "));
-
+        Writer.WriteLine("\n1. Return Main Menu\n0. Log out", "white");
+        Writer.Write("\nYour Choice: ", "green");
         ChooseOfSemiUi(InputForSemiUi());
     }
 
@@ -268,7 +268,7 @@ public class ServiceMachine : User
                 break;
             default:
                 Console.Clear();
-                Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidOption(LimitSemiUi)));
+                Writer.WriteLine(Messenger.InvalidOption(LimitSemiUi),"red");
                 SemiUi();
                 break;
         }
@@ -278,13 +278,13 @@ public class ServiceMachine : User
     // --- Start OF TRANSFER PROCESS ---
     protected static void TransferMoney()
     {
-        if(!AttemptsHandler.LetTransferMoney()) return;
+        if (!AttemptsHandler.LetTransferMoney()) return;
 
         int receiverId = GetIdToTransfer();
 
         if (!Validator.IsNationalId(receiverId))
         {
-            Console.WriteLine(FontStyle.Red("Not Found."));
+            Writer.WriteLine("Not Found.", "red");
             SemiUi();
             return;
         }
@@ -310,8 +310,7 @@ public class ServiceMachine : User
     private static int GetIdToTransfer()
     {
         if (!AttemptsHandler.LetGetIdToTransfer()) return -1;
-
-        Console.Write(FontStyle.Green("Enter the ID number of the person you want to transfer to: "));
+        Writer.Write("Enter the ID number of the person you want to transfer to: ", "green");
 
         int receiverId;
         try
@@ -321,7 +320,7 @@ public class ServiceMachine : User
         catch (Exception)
         {
             GetIdToTransfer();
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitIdToTransfer)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitIdToTransfer),"red");
             return -1;
         }
 
@@ -332,13 +331,13 @@ public class ServiceMachine : User
     {
         if (receiverId == TreeManager.SearchMethodArray[0].NationalId)
         {
-            Console.WriteLine(FontStyle.Red("You cannot transfer to yourself!"));
+            Writer.WriteLine("You cannot transfer to yourself!", "red");
             return false;
         }
 
         if (receiverId != TreeManager.SearchMethodArrayForReceiver[0].NationalId)
         {
-            Console.WriteLine(FontStyle.Red("No account exists under this ID number"));
+            Writer.WriteLine("No account exists under this ID number", "red");
             return false;
         }
 
@@ -354,14 +353,14 @@ public class ServiceMachine : User
     {
         if (!AttemptsHandler.LetGetAmountToTransfer()) return -1;
 
-        Console.Write(FontStyle.Green("Enter amount to transfer to the selected account: "));
+        Writer.Write("Enter amount to transfer to the selected account: ", "green");
         try
         {
             _amountToTrans = Convert.ToDouble(Console.ReadLine());
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitValueToTrans)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitValueToTrans),"red");
             GetAmountToTransfer();
             return -1;
         }
@@ -374,21 +373,21 @@ public class ServiceMachine : User
     {
         if (!Validator.IsBiggerThan49(amount))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.LessThan50()));
+            Writer.WriteLine(Messenger.LessThan50(),"red");
             GetAmountToTransfer();
             return false;
         }
 
         if (!Validator.IsLessThan10001(amount))
         {
-            ValidatorMessenger.BiggerThan10000();
+            Messenger.BiggerThan10000();
             GetAmountToTransfer();
             return false;
         }
 
         if (!IsSenderBalanceEnought(amount))
         {
-            Console.WriteLine(FontStyle.Red(BalanceNotEnoughtMessage()));
+            Writer.WriteLine(BalanceNotEnoughtMessage(),"red");
             GetAmountToTransfer();
             return false;
         }
@@ -410,8 +409,8 @@ public class ServiceMachine : User
     {
         if (amountToTransfer > GetSenderBalance())
         {
-            Console.WriteLine(FontStyle.Red(BalanceNotEnoughtMessage()));
-            Console.WriteLine(FontStyle.White(DisplayBalance()));
+            Writer.WriteLine(BalanceNotEnoughtMessage(),"red");
+            Writer.WriteLine(DisplayBalance(),"white");
             SemiUi();
             return false;
         }
@@ -447,9 +446,9 @@ public class ServiceMachine : User
 
 
         //Console.Clear();
-        Console.Write(FontStyle.Red("==> "));
-        Console.Write(FontStyle.Green("Transferred successfully."));
-        Console.Write(FontStyle.Red(" <==\n"));
+        Writer.Write("==> ", "red");
+        Writer.Write("Transferred successfully.", "green");
+        Writer.Write(" <==\n", "red");
         LimitValueToTrans = AttemptsHandler.ResetAttempts(LimitValueToTrans);
         SemiUi();
     } // --- END OF TRANSFER PROCESS ---
@@ -470,7 +469,7 @@ public class ServiceMachine : User
 
     private static double GetAmountToWithdraw()
     {
-        Console.Write(FontStyle.Green("Enter amount to withdraw: "));
+        Writer.Write("Enter amount to withdraw: ", "green");
         Double amount;
         try
         {
@@ -478,7 +477,7 @@ public class ServiceMachine : User
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitWithdrawProcess)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitWithdrawProcess),"red");
             Withdraw();
             return -1;
         }
@@ -490,29 +489,29 @@ public class ServiceMachine : User
     {
         if (!Validator.IsBiggerThan49(amount))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.LessThan50()));
+            Writer.WriteLine(Messenger.LessThan50(),"red");
             Withdraw();
             return false;
         }
 
         if (!Validator.IsLessThan5001(amount))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.BiggerThan5000()));
+            Writer.WriteLine(Messenger.BiggerThan5000(),"red");
             Withdraw();
             return false;
         }
 
         if (!Validator.IsMultipleOf50Or100(amount))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.NotMultipleOf50Or100()));
+            Writer.WriteLine(Messenger.NotMultipleOf50Or100(),"red");
             Withdraw();
             return false;
         }
 
         if (!(amount <= TreeManager.SearchMethodArray[0].Balance))
         {
-            Console.WriteLine(FontStyle.Red(BalanceNotEnoughtMessage()));
-            Console.WriteLine(FontStyle.White(DisplayBalance()));
+            Writer.WriteLine(BalanceNotEnoughtMessage(),"red");
+            Writer.WriteLine(DisplayBalance(),"white");
             MainUi();
         }
 
@@ -522,7 +521,7 @@ public class ServiceMachine : User
     protected static void CompleteWithdraw(double amount)
     {
         UpdateUserBalance(_balance = AccountBalance() - amount);
-        Console.WriteLine(FontStyle.White(DisplayNewBalance()));
+        Writer.WriteLine(DisplayNewBalance(),"white");
 
         // store operation data
         _bankStatement.AddWithdraw(UserAuth.UserAccountId, amount);
@@ -577,7 +576,7 @@ public class ServiceMachine : User
 
         // Update balance
         UpdateUserBalance(_balance);
-        Console.WriteLine(FontStyle.White(DisplayNewBalance()));
+        Writer.WriteLine(DisplayNewBalance(),"white");
 
         // Add to statements
         _bankStatement.AddDeposit(UserAuth.UserAccountId, _amountToDeposit);
@@ -587,15 +586,14 @@ public class ServiceMachine : User
 
     private static double InputForDeposit()
     {
-        Console.Write(FontStyle.Green("Enter amount to deposit: "));
-
+        Writer.Write("Enter amount to deposit: ", "green");
         try
         {
             _amountToDeposit = Convert.ToDouble(Console.ReadLine());
         }
         catch (Exception)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitDepositeProcess)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitDepositeProcess),"red");
             Deposit();
             return -1;
         }
@@ -607,13 +605,13 @@ public class ServiceMachine : User
     {
         if (amount > 150000)
         {
-            Console.WriteLine(FontStyle.Red("You cannot deposit more than 150000$ per time"));
+            Writer.WriteLine("You cannot deposit more than 150000$ per time", "red");
             return false;
         }
 
         if (!Validator.IsMultipleOf50Or100(amount))
         {
-            Console.WriteLine(FontStyle.Red("Please enter a number multiples of 50 or 100: "));
+            Writer.WriteLine("Please enter a number multiples of 50 or 100: ", "red");
             return false;
         }
 
@@ -622,21 +620,23 @@ public class ServiceMachine : User
 
     private static void Balance()
     {
-        Console.WriteLine(FontStyle.White(DisplayBalance()));
+        Writer.WriteLine(DisplayBalance(),"white");
         SemiUi();
     }
 
     private static void Statements()
     {
-        if(!AttemptsHandler.LetStatements()) return;
+        if (!AttemptsHandler.LetStatements()) return;
 
-        Console.WriteLine(FontStyle.White("====* Statements section *====\n"));
-        Console.WriteLine(FontStyle.Green("1. Withdraw Statements."));
-        Console.WriteLine(FontStyle.Green("2. Deposit Statements."));
-        Console.WriteLine(FontStyle.Green("3. Transactions Statements."));
-        Console.WriteLine(FontStyle.Green("4. All Statements Operations"));
-        Console.Write(FontStyle.White("\nYour Choice: "));
+        var output = new StringBuilder();
+        output.AppendLine("1. Withdraw Statements.");
+        output.AppendLine("2. Deposit Statements.");
+        output.AppendLine("3. Transactions Statements.");
+        output.AppendLine("4. All Statements Operations");
 
+        Writer.WriteLine("====* Statements section *====\n","white");
+        Writer.Write(output.ToString(), "green"); // write the appended messages
+        Writer.Write("\nYour Choice: ","white");
 
         InputStatementType(); // continue
     }
@@ -651,7 +651,7 @@ public class ServiceMachine : User
         catch (Exception)
         {
             Console.Clear();
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(LimitStatementProcess)));
+            Writer.WriteLine(Messenger.InvalidInput(LimitStatementProcess),"red");
             Statements();
             return;
         }
@@ -685,7 +685,7 @@ public class ServiceMachine : User
                 break;
             default:
                 Console.Clear();
-                Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidOption(LimitStatementProcess)));
+                Writer.WriteLine(Messenger.InvalidOption(LimitStatementProcess),"red");
                 Statements();
                 break;
         }
@@ -725,7 +725,7 @@ public class ServiceMachine : User
         AttemptsHandler.ResetSystemLimitations();
 
         SlowClearConsole(20);
-        Console.WriteLine(FontStyle.White("Thanks for using our SSM."));
+        Console.WriteLine(Font.White("Thanks for using our SSM."));
         StartPoint();
     }
 }

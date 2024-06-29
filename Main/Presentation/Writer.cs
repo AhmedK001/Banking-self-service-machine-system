@@ -1,6 +1,6 @@
 namespace Main;
 
-public class Messenger
+public class Writer
 {
     private static readonly string _Write = "write";
     private static readonly string _WriteLine = "writeLine";
@@ -19,14 +19,22 @@ public class Messenger
         if (_lowerCaseColor.Equals(Green))
         {
             WriteGreen(line, _Write);
+            return;
         }
 
         if (_lowerCaseColor.Equals(Red))
         {
             WriteRed(line, _Write);
+            return;
         }
 
         if (_lowerCaseColor.Equals(White))
+        {
+            WriteWhite(line, _Write);
+            return;
+        }
+
+        if (_lowerCaseColor.Any()) // if random color input, write with white color
         {
             WriteWhite(line, _Write);
         }
@@ -39,14 +47,22 @@ public class Messenger
         if (_lowerCaseColor.Equals(Green))
         {
             WriteGreen(line, _Write, limit);
+            return;
         }
 
         if (_lowerCaseColor.Equals(Red))
         {
             WriteRed(line, _Write, limit);
+            return;
         }
 
         if (_lowerCaseColor.Equals(White))
+        {
+            WriteWhite(line, _Write, limit);
+            return;
+        }
+
+        if (_lowerCaseColor.Any()) // if random color input, write with white color
         {
             WriteWhite(line, _Write, limit);
         }
@@ -59,14 +75,22 @@ public class Messenger
         if (_lowerCaseColor.Equals(Green))
         {
             WriteGreen(line, _WriteLine);
+            return;
         }
 
         if (_lowerCaseColor.Equals(Red))
         {
             WriteRed(line, _WriteLine);
+            return;
         }
 
         if (_lowerCaseColor.Equals(White))
+        {
+            WriteWhite(line, _WriteLine);
+            return;
+        }
+
+        if (_lowerCaseColor.Any()) // if random color input, write with white color
         {
             WriteWhite(line, _WriteLine);
         }
@@ -79,14 +103,22 @@ public class Messenger
         if (_lowerCaseColor.Equals(Green))
         {
             WriteGreen(line, _WriteLine, limit);
+            return;
         }
 
         if (_lowerCaseColor.Equals(Red))
         {
             WriteRed(line, _WriteLine, limit);
+            return;
         }
 
         if (_lowerCaseColor.Equals(White))
+        {
+            WriteWhite(line, _WriteLine, limit);
+            return;
+        }
+
+        if (_lowerCaseColor.Any()) // if random color input, write with white color
         {
             WriteWhite(line, _WriteLine, limit);
         }
@@ -97,12 +129,12 @@ public class Messenger
     {
         if (type.Equals(_Write))
         {
-            Console.Write(FontStyle.White(line));
+            Console.Write(Font.White(line));
         }
 
         if (type.Equals(_WriteLine))
         {
-            Console.WriteLine(FontStyle.White(line));
+            Console.WriteLine(Font.White(line));
         }
     }
 
@@ -110,12 +142,12 @@ public class Messenger
     {
         if (type.Equals(_Write))
         {
-            Console.Write(FontStyle.Green(line));
+            Console.Write(Font.Green(line));
         }
 
         if (type.Equals(_WriteLine))
         {
-            Console.WriteLine(FontStyle.Green(line));
+            Console.WriteLine(Font.Green(line));
         }
     }
 
@@ -123,12 +155,12 @@ public class Messenger
     {
         if (type.Equals(_Write))
         {
-            Console.Write(FontStyle.Red(line));
+            Console.Write(Font.Red(line));
         }
 
         if (type.Equals(_WriteLine))
         {
-            Console.WriteLine(FontStyle.Red(line));
+            Console.WriteLine(Font.Red(line));
         }
     }
 
@@ -136,12 +168,12 @@ public class Messenger
     {
         if (type.Equals(_Write))
         {
-            Console.Write(FontStyle.Red(line+ " " + ValidatorMessenger.DisplayChances(limit)));
+            Console.Write(Font.Red(line + " " + Messenger.DisplayChances(limit)));
         }
 
         if (type.Equals(_WriteLine))
         {
-            Console.WriteLine(FontStyle.Red(line+ " " + ValidatorMessenger.DisplayChances(limit)));
+            Console.WriteLine(Font.Red(line + " " + Messenger.DisplayChances(limit)));
         }
     }
 
@@ -149,12 +181,12 @@ public class Messenger
     {
         if (type.Equals(_Write))
         {
-            Console.Write(FontStyle.Green(line+ " " + ValidatorMessenger.DisplayChances(limit)));
+            Console.Write(Font.Green(line + " " + Messenger.DisplayChances(limit)));
         }
 
         if (type.Equals(_WriteLine))
         {
-            Console.WriteLine(FontStyle.Green(line+ " " + ValidatorMessenger.DisplayChances(limit)));
+            Console.WriteLine(Font.Green(line + " " + Messenger.DisplayChances(limit)));
         }
     }
 
@@ -162,12 +194,12 @@ public class Messenger
     {
         if (type.Equals(_Write))
         {
-            Console.Write(FontStyle.White(line + " " + ValidatorMessenger.DisplayChances(limit)));
+            Console.Write(Font.White(line + " " + Messenger.DisplayChances(limit)));
         }
 
         if (type.Equals(_WriteLine))
         {
-            Console.WriteLine(FontStyle.White(line+ " " + ValidatorMessenger.DisplayChances(limit)));
+            Console.WriteLine(Font.White(line + " " + Messenger.DisplayChances(limit)));
         }
     }
 }

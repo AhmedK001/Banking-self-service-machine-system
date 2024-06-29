@@ -5,7 +5,7 @@ public class InputsHandler
     public static int? GetInt(string notifyMessage,int limit)
     {
         // notify user what to input
-        Messenger.Write(notifyMessage,"green");
+        Writer.Write(notifyMessage,"green");
 
         int? input = null;
 
@@ -15,7 +15,7 @@ public class InputsHandler
         }
         catch (Exception e)
         {
-            ValidatorMessenger.InvalidInput(limit);
+            Messenger.InvalidInput(limit);
         }
 
         return input;
@@ -24,7 +24,7 @@ public class InputsHandler
     public static string? GetString(string notifyMessage,int limit)
     {
         // notify user what to input
-        Messenger.Write(notifyMessage,"green");
+        Writer.Write(notifyMessage,"green");
         
         string? input = null;
         try
@@ -33,7 +33,7 @@ public class InputsHandler
         }
         catch (Exception)
         {
-            ValidatorMessenger.InvalidInput(limit);
+            Messenger.InvalidInput(limit);
         }
 
         return input;

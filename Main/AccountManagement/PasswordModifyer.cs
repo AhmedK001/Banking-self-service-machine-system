@@ -10,7 +10,7 @@ public class PasswordModifyer : User
 
     public static void ChangePassword()
     {
-        List<User>? user = HandleChangePasswordInputs();
+        User? user = HandleChangePasswordInputs();
 
         if (user is null)
         {
@@ -21,9 +21,9 @@ public class PasswordModifyer : User
         UpdatePassword(user);
     }
 
-    public static List<User>? HandleChangePasswordInputs()
+    public static User? HandleChangePasswordInputs()
     {
-        Console.WriteLine(FontStyle.White("==|* Changing Password *|=="));
+        Writer.WriteLine("==|* Changing Password *|==","white");
 
         int? nationalId = HandleNationalIdInput();
         if (nationalId is null) return null;
@@ -40,8 +40,8 @@ public class PasswordModifyer : User
         // Check if the new password first and second chance matches
         if (!Validator.AreStringsMatches(newPassword, reNewPassword)) return null;
 
-        // If passed all then return national id & new password
-        return InputsConverter.ToNonNullable(nationalId, newPassword);
+        // If passed all, then return national id & new password as instance of User
+        return new User(InputsConverter.ToNonNull(nationalId),newPassword);
     }
 
     private static int? HandleNationalIdInput()
@@ -52,19 +52,19 @@ public class PasswordModifyer : User
 
         if (userId is null)
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(AttemptsHandler.InputsLimit)));
+            Console.WriteLine(Font.Red(Messenger.InvalidInput(AttemptsHandler.InputsLimit)));
             return HandleNationalIdInput();
         }
 
         if (!Validator.IsNationalId(userId))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.InvalidInput(AttemptsHandler.InputsLimit)));
+            Console.WriteLine(Font.Red(Messenger.InvalidInput(AttemptsHandler.InputsLimit)));
             return HandleNationalIdInput();
         }
 
         if (!Validator.IsIdForCurrentAccount(userId))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.IdNotForCurrentUser(AttemptsHandler.InputsLimit)));
+            Console.WriteLine(Font.Red(Messenger.IdNotForCurrentUser(AttemptsHandler.InputsLimit)));
             return HandleNationalIdInput();
         }
 
@@ -79,7 +79,7 @@ public class PasswordModifyer : User
         string? userOldPassword = InputsHandler.GetString("Enter your current password: ", AttemptsHandler.InputsLimit);
         if (!Validator.IsCurrentPassword(userOldPassword))
         {
-            Console.WriteLine(FontStyle.Red(ValidatorMessenger.IncorrectPassword(AttemptsHandler.InputsLimit)));
+            Console.WriteLine(Font.Red(Messenger.IncorrectPassword(AttemptsHandler.InputsLimit)));
             return HandleOldPasswordInput();
         }
 
@@ -103,14 +103,13 @@ public class PasswordModifyer : User
 
         if (!Validator.IsPassword(userNewPassword))
         {
-            Console.WriteLine(ValidatorMessenger.InvalidInput(AttemptsHandler.InputsLimit));
+            Console.WriteLine(Messenger.InvalidInput(AttemptsHandler.InputsLimit));
             return HandleNewPasswordInput(oldPassword, "first");
         }
 
         if (userNewPassword.Equals(oldPassword))
         {
-            Console.WriteLine(FontStyle.Red("New password should be different! " +
-                                            ValidatorMessenger.DisplayChances(AttemptsHandler.InputsLimit)));
+            Writer.WriteLine("New password should be different! ","red",AttemptsHandler.InputsLimit);
             return HandleNewPasswordInput(oldPassword, "first");
         }
 
@@ -118,18 +117,18 @@ public class PasswordModifyer : User
         return userNewPassword;
     }
 
-    private static void UpdatePassword(List<User> user)
+    private static void UpdatePassword(User? user)
     {
-        if (!user.Any()) return;
+        if (user is null) return;
 
-        if (!(Validator.IsNationalId(user[0].NationalId) || Validator.IsPassword(user[0].Password))) return;
+        if (!(Validator.IsNationalId(user.NationalId) || Validator.IsPassword(user.Password))) return;
 
         // Update password
-        TreeManager.SearchMethodArray.First().Password = user[0].Password;
+        TreeManager.SearchMethodArray.First().Password = user.Password;
         // Update the new changes
         TreeManager.UpdateNewChanges();
 
-        Console.WriteLine(FontStyle.White("\n\n** Changed your password successfully! **"));
+        Writer.WriteLine("\n\n** Changed your password successfully! **","white");
         ServiceMachine.SemiUi();
     }
 

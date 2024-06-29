@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Main
-build_property.ProjectDir = C:\0Mine\0C Sharp Projects\MyGitoHub\Banking-self-service-machine-system\Main\
+build_property.ProjectDir = C:\0Mine\0C Sharp Projects\GitHubRepos\Banking-self-service-machine-system\Main\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

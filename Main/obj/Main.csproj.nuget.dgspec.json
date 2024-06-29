@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\0Mine\\0C Sharp Projects\\MyGitoHub\\Banking-self-service-machine-system\\Main\\Main.csproj": {}
+    "C:\\0Mine\\0C Sharp Projects\\GitHubRepos\\Banking-self-service-machine-system\\Main\\Main.csproj": {}
   },
   "projects": {
-    "C:\\0Mine\\0C Sharp Projects\\MyGitoHub\\Banking-self-service-machine-system\\Main\\Main.csproj": {
+    "C:\\0Mine\\0C Sharp Projects\\GitHubRepos\\Banking-self-service-machine-system\\Main\\Main.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\0Mine\\0C Sharp Projects\\MyGitoHub\\Banking-self-service-machine-system\\Main\\Main.csproj",
+        "projectUniqueName": "C:\\0Mine\\0C Sharp Projects\\GitHubRepos\\Banking-self-service-machine-system\\Main\\Main.csproj",
         "projectName": "Main",
-        "projectPath": "C:\\0Mine\\0C Sharp Projects\\MyGitoHub\\Banking-self-service-machine-system\\Main\\Main.csproj",
+        "projectPath": "C:\\0Mine\\0C Sharp Projects\\GitHubRepos\\Banking-self-service-machine-system\\Main\\Main.csproj",
         "packagesPath": "C:\\Users\\Semi TUF\\.nuget\\packages\\",
-        "outputPath": "C:\\0Mine\\0C Sharp Projects\\MyGitoHub\\Banking-self-service-machine-system\\Main\\obj\\",
+        "outputPath": "C:\\0Mine\\0C Sharp Projects\\GitHubRepos\\Banking-self-service-machine-system\\Main\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Semi TUF\\AppData\\Roaming\\NuGet\\NuGet.Config",

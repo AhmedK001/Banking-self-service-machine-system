@@ -1,6 +1,6 @@
 namespace Main;
 
-public class FontStyle
+public class Font
 {
     private const string Bold = "\u001B[1m";
     private const string Reset = "\u001B[0m";

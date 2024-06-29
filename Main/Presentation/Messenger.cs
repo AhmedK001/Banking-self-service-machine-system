@@ -1,6 +1,6 @@
 namespace Main;
 
-public class ValidatorMessenger
+public class Messenger
 {
     public static string LessThan50()
     {

@@ -16,8 +16,14 @@ public class InputsConverter
         return currentUserList;
     }
 
+    public static int ToNonNull(int? id)
+    {
+        return Convert.ToInt32(id); // return Non null national id
+    }
+
     public static string ToLower(string line)
     {
         return line.ToLower();
     }
+    
 }
