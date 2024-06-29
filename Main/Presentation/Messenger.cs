@@ -1,173 +1,84 @@
 namespace Main;
 
-public class Messenger
+public class ValidatorMessenger
 {
-    private static readonly string _Write = "write";
-    private static readonly string _WriteLine = "writeLine";
-
-    private static readonly string White = "white";
-    private static readonly string Green = "green";
-    private static readonly string Red = "red";
-
-    private static string _lowerCaseColor;
-
-
-    public static void Write(string line, string color)
+    public static string LessThan50()
     {
-        _lowerCaseColor = color.ToLower();
-
-        if (_lowerCaseColor.Equals(Green))
-        {
-            WriteGreen(line, _Write);
-        }
-
-        if (_lowerCaseColor.Equals(Red))
-        {
-            WriteRed(line, _Write);
-        }
-
-        if (_lowerCaseColor.Equals(White))
-        {
-            WriteWhite(line, _Write);
-        }
+        return "Amount should be equal to or bigger than 50$!";
     }
 
-    public static void Write(string line, string color, int limit)
+    public static string NotMultipleOf50Or100()
     {
-        _lowerCaseColor = color.ToLower();
-
-        if (_lowerCaseColor.Equals(Green))
-        {
-            WriteGreen(line, _Write, limit);
-        }
-
-        if (_lowerCaseColor.Equals(Red))
-        {
-            WriteRed(line, _Write, limit);
-        }
-
-        if (_lowerCaseColor.Equals(White))
-        {
-            WriteWhite(line, _Write, limit);
-        }
+        return "Please enter a value multiple of 50 or 100.";
     }
 
-    public static void WriteLine(string line, string color)
+    public static string BiggerThan10000()
     {
-        _lowerCaseColor = color.ToLower();
-
-        if (_lowerCaseColor.Equals(Green))
-        {
-            WriteGreen(line, _WriteLine);
-        }
-
-        if (_lowerCaseColor.Equals(Red))
-        {
-            WriteRed(line, _WriteLine);
-        }
-
-        if (_lowerCaseColor.Equals(White))
-        {
-            WriteWhite(line, _WriteLine);
-        }
+        return "Amount should be less than 10000$";
     }
 
-    public static void WriteLine(string line, string color, int limit)
+    public static string BiggerThan5000()
     {
-        _lowerCaseColor = color.ToLower();
-
-        if (_lowerCaseColor.Equals(Green))
-        {
-            WriteGreen(line, _WriteLine, limit);
-        }
-
-        if (_lowerCaseColor.Equals(Red))
-        {
-            WriteRed(line, _WriteLine, limit);
-        }
-
-        if (_lowerCaseColor.Equals(White))
-        {
-            WriteWhite(line, _WriteLine, limit);
-        }
+        return "Amount should be equal to or less than 5000$!";
     }
 
-
-    private static void WriteWhite(string line, string type)
+    public static string InvalidOption(int chances)
     {
-        if (type.Equals(_Write))
+        if (chances - 1 > 1)
         {
-            Console.Write(FontStyle.White(line));
+            return $"Invalid option. {chances - 1} Chances Left.";
         }
 
-        if (type.Equals(_WriteLine))
-        {
-            Console.WriteLine(FontStyle.White(line));
-        }
+        return $"Invalid option. {chances - 1} Chance Left.";
     }
 
-    private static void WriteGreen(string line, string type)
+    public static string InvalidInput(int chances)
     {
-        if (type.Equals(_Write))
+        if (chances - 1 > 1)
         {
-            Console.Write(FontStyle.Green(line));
+            return $"Invalid Input. {chances - 1} Chances Left.";
         }
 
-        if (type.Equals(_WriteLine))
-        {
-            Console.WriteLine(FontStyle.Green(line));
-        }
+        return $"Invalid Input. {chances - 1} Chance Left.";
     }
 
-    private static void WriteRed(string line, string type)
+    public static string IncorrectInput(int chances)
     {
-        if (type.Equals(_Write))
+        if (chances - 1 > 1)
         {
-            Console.Write(FontStyle.Red(line));
+            return $"National ID or Password is incorrect! {chances - 1} Chances Left.";
         }
 
-        if (type.Equals(_WriteLine))
+        return $"National ID or Password is incorrect! {chances - 1} Chance Left.";
+    }
+    
+    public static string IncorrectPassword(int chances)
+    {
+        if (chances - 1 > 1)
         {
-            Console.WriteLine(FontStyle.Red(line));
+            return $"Password is incorrect! {chances - 1} Chances Left.";
         }
+
+        return $"Password is incorrect! {chances - 1} Chance Left.";
     }
 
-    private static void WriteRed(string line, string type, int limit)
+    public static string IdNotForCurrentUser(int chances)
     {
-        if (type.Equals(_Write))
+        if (chances - 1 > 1)
         {
-            Console.Write(FontStyle.Red(line+ " " + ValidatorMessenger.DisplayChances(limit)));
+            return $"Id is not for current account! {chances - 1} Chances Left.";
         }
 
-        if (type.Equals(_WriteLine))
-        {
-            Console.WriteLine(FontStyle.Red(line+ " " + ValidatorMessenger.DisplayChances(limit)));
-        }
+        return $"Id is not for current account! {chances - 1} Chance Left.";
     }
-
-    private static void WriteGreen(string line, string type, int limit)
+    
+    public static string DisplayChances(int chances)
     {
-        if (type.Equals(_Write))
+        if (chances - 1 > 1)
         {
-            Console.Write(FontStyle.Green(line+ " " + ValidatorMessenger.DisplayChances(limit)));
+            return $"{chances - 1} Chances Left.";
         }
 
-        if (type.Equals(_WriteLine))
-        {
-            Console.WriteLine(FontStyle.Green(line+ " " + ValidatorMessenger.DisplayChances(limit)));
-        }
-    }
-
-    private static void WriteWhite(string line, string type, int limit)
-    {
-        if (type.Equals(_Write))
-        {
-            Console.Write(FontStyle.White(line + " " + ValidatorMessenger.DisplayChances(limit)));
-        }
-
-        if (type.Equals(_WriteLine))
-        {
-            Console.WriteLine(FontStyle.White(line+ " " + ValidatorMessenger.DisplayChances(limit)));
-        }
+        return $"{chances - 1} Chance Left.";
     }
 }
